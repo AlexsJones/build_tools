@@ -8,6 +8,6 @@ For use in CI build steps to do actual complex tasks that CI usually wont do (Or
 ###Usage
 
 ```
-./build_service.py --service shell --optargs echo "Hello World!"
-./build_service.py --service build --build_number 09130 --create_chain true
+./build_tools.py --service shell --optargs echo "Hello World!"
+./build_tools.py --service build --build_number 09130 --create_chain true
 ```
