@@ -3,13 +3,28 @@
 #     File Name           :     build_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 11:31]
-#     Last Modified       :     [2016-09-19 13:47]
+#     Last Modified       :     [2016-09-19 14:21]
 #     Description         :      
 #################################################################################
 import os
 import sys
 import inspect
 from optparse import OptionParser
+# ------------------------
+# Services must follow the following format
+# Folder -> services
+# Name -> %s_service 
+# Bootstrap classname -> %s_service
+# Bootstrap class required methods
+# class name_service:
+#   def __init__(self):
+#       print("Starting name_service...")
+#   def additional_options(self, parser):
+#       parser.add_option("-c","--command",help="")
+#   def run(self,options):
+#       print("Running with %s, options.command)
+# -----------------------
+
 def load_modules(parser):
     res = {}
     lst = os.listdir("services")
