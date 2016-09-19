@@ -3,14 +3,14 @@
 #     File Name           :     build_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 11:31]
-#     Last Modified       :     [2016-09-19 13:24]
+#     Last Modified       :     [2016-09-19 13:47]
 #     Description         :      
 #################################################################################
 import os
 import sys
 import inspect
 from optparse import OptionParser
-def load_modules():
+def load_modules(parser):
     res = {}
     lst = os.listdir("services")
     dir = []
@@ -35,15 +35,18 @@ def load_modules():
                     try:
                         klass = getattr(res[d],a)
                         d = klass()
+                        # Load additional options from Modules
+                        d.additional_options(parser)                        
                         res[a] = d
                     except:
                         print("Error loading module %s" % a)
     return res
 if __name__ == "__main__" :
-    print("Loading Modules...")
-    m = load_modules()
-    # Options
+    # Create parser
     parser = OptionParser()
+    print("Loading Modules...")
+    m = load_modules(parser)
+    # build_service options
     parser.add_option("-s","--service",
             help="Name of the service to run e.g. shell")
     (options,args) = parser.parse_args()
