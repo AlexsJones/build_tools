@@ -3,13 +3,15 @@
 #     File Name           :     build_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 11:31]
-#     Last Modified       :     [2016-09-19 14:35]
+#     Last Modified       :     [2016-09-19 15:16]
 #     Description         :      
 #################################################################################
 import os
 import sys
 import inspect
 from optparse import OptionParser
+# Configuration
+SERVICES_PATH="services"
 # ------------------------
 # Services must follow the following format
 # Folder -> services
@@ -27,7 +29,7 @@ from optparse import OptionParser
 
 def load_modules(parser):
     res = {}
-    lst = os.listdir("services")
+    lst = os.listdir(SERVICES_PATH)
     dir = []
     for d in lst:
         s = os.path.abspath("services") + os.sep + d
@@ -42,7 +44,7 @@ def load_modules(parser):
     for d in dir:
         print("Loading %s" % d)
         a,_ = os.path.splitext(d)
-        res[d] = __import__("services." + a,
+        res[d] = __import__(SERVICES_PATH + "." + a,
                 fromlist = ["*"])
         for name, obj in inspect.getmembers(res[d]):
             if inspect.isclass(obj):
@@ -67,19 +69,31 @@ if __name__ == "__main__" :
     parser.add_option("-l","--list",
             action="store_true",
             help="List all services")
+    parser.add_option("-d","--describe",
+            help="Describe a service")
+
     (options,args) = parser.parse_args()
 
     if options.list:
-        print m
+        print(m)
+        exit(0)
+    if options.describe:
+        s = options.describe
+        if not "_service" in options.describe:
+            s = options.describe + "_service"
+        print("Describing service..")
+        try:
+            print(inspect.getmembers(m[s],predicate=inspect.ismethod))
+        except:
+            print("Service not found")
         exit(0)
     if not options.service:
         print("Please provide the name of a service module to run...")
         exit(0)
-
+    # Run selected module
     service = options.service
     if not "_service" in options.service:
         service = options.service + "_service"
-
     if not service in m.keys():
         print("Service not found: %s" % service)
         exit(0)
