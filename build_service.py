@@ -3,7 +3,7 @@
 #     File Name           :     build_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 11:31]
-#     Last Modified       :     [2016-09-19 14:21]
+#     Last Modified       :     [2016-09-19 14:32]
 #     Description         :      
 #################################################################################
 import os
@@ -64,8 +64,14 @@ if __name__ == "__main__" :
     # build_service options
     parser.add_option("-s","--service",
             help="Name of the service to run e.g. shell")
+    parser.add_option("-l","--list",
+            action="store_true",
+            help="List all services")
     (options,args) = parser.parse_args()
 
+    if options.list:
+        print m
+        exit(0)
     if not options.service:
         print("Please provide the name of a service module to run...")
         exit(0)
