@@ -3,7 +3,7 @@
 #     File Name           :     build_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 11:31]
-#     Last Modified       :     [2016-09-19 15:16]
+#     Last Modified       :     [2016-09-20 10:50]
 #     Description         :      
 #################################################################################
 import os
@@ -58,6 +58,7 @@ def load_modules(parser):
                     except:
                         print("Error loading module %s" % a)
     return res
+
 if __name__ == "__main__" :
     # Create parser
     parser = OptionParser()
@@ -65,12 +66,12 @@ if __name__ == "__main__" :
     m = load_modules(parser)
     # build_service options
     parser.add_option("-s","--service",
-            help="Name of the service to run e.g. shell")
+            help="Name of the SERVICE to run e.g. shell",metavar="SERVICE")
     parser.add_option("-l","--list",
             action="store_true",
-            help="List all services")
+            help="List all SERVICE")
     parser.add_option("-d","--describe",
-            help="Describe a service")
+            help="Describe a SERVICE",metavar="SERVICE")
 
     (options,args) = parser.parse_args()
 
