@@ -1,3 +1,4 @@
+![buildIcon](/res/hammer.png)
 ##build tools
 ===========
 
