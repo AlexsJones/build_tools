@@ -20,5 +20,5 @@ Build triggering: Useful when you need to kick off a non-directly chained build 
 
 Shell commands on the agent
 ```
-./build_tools.py --service shell --optargs echo "Hello World!"
+./build_tools.py --service shell --shell_command echo  --shell_command_args "Hello World!"
 ```
