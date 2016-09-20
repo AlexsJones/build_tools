@@ -3,7 +3,7 @@
 #     File Name           :     services/shell.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 11:52]
-#     Last Modified       :     [2016-09-20 10:50]
+#     Last Modified       :     [2016-09-20 13:11]
 #     Description         :      
 #################################################################################
 from optparse import OptionParser
@@ -20,10 +20,10 @@ class shell_service():
     
     def run(self, options):
         print("Running with options %s" % options)
-        if not options.teamcity_command:
+        if not options.shell_command:
             print("No command given to run...")
         args = ""
-        if options.command_args:
-            args = options.command_args
-        if options.command:
-            call([options.command, args])
+        if options.shell_command_args:
+            args = options.shell_command_args
+        if options.shell_command:
+            call([options.shell_command, args])
