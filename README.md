@@ -22,3 +22,7 @@ Shell commands on the agent
 ```
 ./build_tools.py --service shell --shell_command echo  --shell_command_args "Hello World!"
 ```
+
+####Example of CI integration
+
+![ciintegration](/res/ci_integration.png)
