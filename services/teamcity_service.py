@@ -3,7 +3,7 @@
 #     File Name           :     services/teamcity_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 14:55]
-#     Last Modified       :     [2016-09-20 12:46]
+#     Last Modified       :     [2016-09-20 12:50]
 #     Description         :      
 #################################################################################
 import json
@@ -17,9 +17,8 @@ class teamcity_service():
         parser.add_option("--teamcity_command",
                 help="teamcity COMMAND to execute: trigger",
                 metavar="COMMAND")
-        parser.add_option("--teamcity_command_args",
-                help="teamcity command executable COMMAND arguments e.g." +   
-                "COMMAND /buildfolder/123")
+        parser.add_option("--teamcity_build_id",
+                help="teamcity build id to work with") 
         parser.add_option("--teamcity_server",
                 help="teamcity server url e.g. http://localhost")
         parser.add_option("--teamcity_port",
@@ -45,14 +44,14 @@ class teamcity_service():
                 options.teamcity_port)
 
         if "trigger" in options.teamcity_command:
-            if not options.teamcity_command_args:
-                print("Requires build ID as the teamcity_command_arg")
+            if not options.teamcity_build_id:
+                print("Requires build ID as the teamcity_build_id")
                 exit(0)
 
             template = '<build><buildType id={id}/></build>'
             url = tc_rest_url + 'buildQueue'
             headers = {'Content-Type':'application/xml'}
-            data = template.format(id=quoteattr(options.teamcity_command_args))
+            data = template.format(id=quoteattr(options.teamcity_build_id))
 
             r = requests.post(url,headers=headers,data=data,auth=(options.teamcity_user,
                 options.teamcity_password),timeout=10) 
