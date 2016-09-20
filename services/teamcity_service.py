@@ -3,7 +3,7 @@
 #     File Name           :     services/teamcity_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 14:55]
-#     Last Modified       :     [2016-09-20 12:50]
+#     Last Modified       :     [2016-09-20 13:40]
 #     Description         :      
 #################################################################################
 import json
@@ -55,4 +55,4 @@ class teamcity_service():
 
             r = requests.post(url,headers=headers,data=data,auth=(options.teamcity_user,
                 options.teamcity_password),timeout=10) 
-
+            print(r.text)
