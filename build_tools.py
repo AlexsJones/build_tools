@@ -3,7 +3,7 @@
 #     File Name           :     build_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 11:31]
-#     Last Modified       :     [2016-09-20 10:50]
+#     Last Modified       :     [2016-09-29 08:03]
 #     Description         :      
 #################################################################################
 import os
@@ -42,7 +42,6 @@ def load_modules(parser):
             continue   
         dir.append(d)
     for d in dir:
-        print("Loading %s" % d)
         a,_ = os.path.splitext(d)
         res[d] = __import__(SERVICES_PATH + "." + a,
                 fromlist = ["*"])
@@ -74,9 +73,12 @@ if __name__ == "__main__" :
             help="Describe a SERVICE",metavar="SERVICE")
 
     (options,args) = parser.parse_args()
-
     if options.list:
-        print(m)
+        d = []
+        for i in m.keys():
+            if ".py" not in i:
+                d.append(i)
+        print("Services installed: " + str(d))
         exit(0)
     if options.describe:
         s = options.describe
@@ -84,7 +86,11 @@ if __name__ == "__main__" :
             s = options.describe + "_service"
         print("Describing service..")
         try:
-            print(inspect.getmembers(m[s],predicate=inspect.ismethod))
+            members = inspect.getmembers(m[s],predicate=inspect.ismethod)
+            print(s + " has members:")
+            for m in members:
+                print m[0]
+    
         except:
             print("Service not found")
         exit(0)

@@ -3,7 +3,7 @@
 #     File Name           :     services/teamcity_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 14:55]
-#     Last Modified       :     [2016-09-21 11:46]
+#     Last Modified       :     [2016-09-21 14:07]
 #     Description         :      
 #################################################################################
 import json
@@ -39,7 +39,7 @@ class teamcity_service():
         print("Running with options %s" % options)
         if not options.teamcity_command:
             print("No command given to run...")
-
+            exit(0)
         if not options.teamcity_server or not options.teamcity_port:
             print("No teamcity server defined")
             exit(0)

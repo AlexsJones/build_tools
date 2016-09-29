@@ -1,1 +1,2 @@
 requests==2.9.1
+jenkinsapi==0.3.2
