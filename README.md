@@ -10,7 +10,7 @@ For use in CI build steps to do actual complex tasks that CI usually wont do (Or
 |---------|-------------------------------------|
 | Teamcity| Start remote builds & download logs |
 | Jenkins | Start remote builds & download logs |
-| Version | Increment version number files      |
+| Build   | Increment build  number files      |
 | Shell   | Runs shell commands                 |
 
 ---
@@ -28,9 +28,9 @@ Shell commands on the agent.
 ```
 ./build_tools.py --service shell --shell_command echo  --shell_command_args "Hello World!"
 ```
-Increment a version number
+Increment a build number
 ```
-./build_tools.py --service version --version_increment VERSION
+./build_tools.py --service build --build_increment VERSION
 ```
 
 ---
