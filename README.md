@@ -13,31 +13,27 @@ For use in CI build steps to do actual complex tasks that CI usually wont do (Or
 | Version | Increment version number files      |
 | Shell   | Runs shell commands                 |
 
-
+---
 ###Usage
 
+Most services are fairly self explantory from running `--describe SERVICE` or `--help` to see all options. 
+But here are some examples of service use:
 
-####teamcity service
-
-Build triggering: Useful when you need to kick off a non-directly chained build in a command step
+Starting a teamcity build.
 ```
 ./build_tools.py --service teamcity --teamcity_server 10.188.108.40 --teamcity_port 80 --teamcity_user admin --teamcity_password admin --teamcity_command trigger --teamcity_build_id ExampleProject_DemoBuild
 ```
 
-####shell service
-
-Shell commands on the agent
+Shell commands on the agent.
 ```
 ./build_tools.py --service shell --shell_command echo  --shell_command_args "Hello World!"
 ```
-
-####version service
-
-Lets you increment a version file (creates one if it doesnt exist)
-
+Increment a version number
 ```
 ./build_tools.py --service version --version_increment VERSION
 ```
+
+---
 ####Example of CI integration
 
 ![ciintegration](/res/ci_integration.png)
