@@ -23,6 +23,13 @@ Shell commands on the agent
 ./build_tools.py --service shell --shell_command echo  --shell_command_args "Hello World!"
 ```
 
+####version service
+
+Lets you increment a version file (creates one if it doesnt exist)
+
+```
+./build_tools.py --service version --version_increment VERSION
+```
 ####Example of CI integration
 
 ![ciintegration](/res/ci_integration.png)
