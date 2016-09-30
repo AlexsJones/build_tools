@@ -6,6 +6,14 @@ Python based dynamic service loading build system
 
 For use in CI build steps to do actual complex tasks that CI usually wont do (Or do badly)
 
+| Service | Purpose |
+|---------|-------------------------------------|
+| Teamcity| Start remote builds & download logs |
+| Jenkins | Start remote builds & download logs |
+| Version | Increment version number files      |
+| Shell   | Runs shell commands                 |
+
+
 ###Usage
 
 
