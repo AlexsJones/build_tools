@@ -3,13 +3,19 @@
 #     File Name           :     services/build_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 14:36]
-#     Last Modified       :     [2016-09-30 15:40]
+#     Last Modified       :     [2016-11-14 14:42]
 #     Description         :      
 #################################################################################
 import os
+import tarfile
+
 
 class build_service():
     def additional_options(self, parser):
+        parser.add_option("--build_command",
+                help="use to decompress|compress directory")
+        parser.add_option("--build_folder",
+                help="build folder pass to compress or decompress")
         parser.add_option("--build_increment",
                 help="build_increment either creates or increments a build file") 
     def __init__(self):
@@ -47,3 +53,12 @@ class build_service():
                 self.update_build_file(options.build_increment)
             else:
                 self.create_build_file(options.build_increment)
+        if options.build_command == "decompress":
+            tar = tarfile.open(options.build_folder)
+            tar.extractall()
+            tar.close()
+
+        if options.build_command == "compress":
+            output_file = options.build_folder + ".tar.gz"
+            with tarfile.open(output_file, "w:gz") as tar:
+                tar.add(options.build_folder, arcname=os.path.basename(options.build_folder))
