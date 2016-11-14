@@ -1,4 +1,4 @@
-![buildIcon](/res/hammer.png)
+![buildIcon](http://i.imgur.com/xzrllfC.png)
 ##build tools
 ===========
 
