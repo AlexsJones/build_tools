@@ -3,22 +3,25 @@
 #     File Name           :     services/gitlab_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-21 13:59]
-#     Last Modified       :     [2016-11-07 10:05]
+#     Last Modified       :     [2016-11-14 15:42]
 #     Description         :      
 #################################################################################
 import gitlab
+
+
 class gitlab_service():
+
     def additional_options(self, parser):
-        parser.add_option("--gitlab_command",
+        parser.add_argument("--command",
                 help="gitlab COMMAND to execute: trigger|log",
                 metavar="COMMAND")
-        parser.add_option("--gitlab_project",
+        parser.add_argument("--gitlab_project",
                 help="gitlab project e.g. username/project")
-        parser.add_option("--gitlab_build_number",
+        parser.add_argument("--gitlab_build_number",
                 help="gitlab build number is used for fetching logs")
-        parser.add_option("--gitlab_server",
+        parser.add_argument("--gitlab_server",
                 help="gitlab server url e.g. http://localhost")
-        parser.add_option("--gitlab_token",
+        parser.add_argument("--gitlab_token",
                 help="gitlab private token  to login with")
 
     def __init__(self):
@@ -26,13 +29,13 @@ class gitlab_service():
 
     def run(self, options):
         print("Running with options %s " % options)
-        if not options.gitlab_command:
+        if not options.command:
             print("No command given to run...")
             exit(0)
         if not options.gitlab_server or not options.gitlab_token:
             print("No gitlab server defined")
             exit(0)
-        if "trigger" in options.gitlab_command:
+        if "trigger" in options.command:
             if not options.gitlab_build_number:
                 print("Requires build ID as the gitlab_build_number")
                 exit(0)
@@ -40,7 +43,7 @@ class gitlab_service():
             gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
             gl.auth()
         
-        if "log" in options.gitlab_command:
+        if "log" in options.command:
             if not options.gitlab_build_number:
                 print("Requires build ID as the gitlab_build_number")
                 exit(0)

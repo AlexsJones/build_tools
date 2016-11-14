@@ -3,28 +3,28 @@
 #     File Name           :     build_service.py
 #     Created By          :     AlexsJones
 #     Creation Date       :     [2016-09-19 11:31]
-#     Last Modified       :     [2016-11-14 14:42]
-#     Description         :      
+#     Last Modified       :     [2016-11-14 16:33]
+#     Description         :
 #################################################################################
 import os
 import sys
 import inspect
-from optparse import OptionParser
+import argparse
 # Configuration
 SERVICES_PATH="services"
 # ------------------------
 # Services must follow the following format
 # Folder -> services
-# Name -> %s_service 
+# Name -> %s_service
 # Bootstrap classname -> %s_service
 # Bootstrap class required methods
 # class name_service:
 #   def __init__(self):
 #       print("Starting name_service...")
-#   def additional_options(self, parser):
-#       parser.add_option("-c","--command",help="")
-#   def run(self,options):
-#       print("Running with %s, options.command)
+#   def additional_args.self, parser):
+#       parser.add_argument("-c","--command",help="")
+#   def run(self):
+#       print("Running with %s, args.command)
 # -----------------------
 
 def load_modules(parser):
@@ -39,7 +39,7 @@ def load_modules(parser):
         if ext == ".pyc":
             continue
         if os.path.isdir(s):
-            continue   
+            continue
         dir.append(d)
     for d in dir:
         a,_ = os.path.splitext(d)
@@ -51,58 +51,26 @@ def load_modules(parser):
                     try:
                         klass = getattr(res[d],a)
                         d = klass()
-                        # Load additional options from Modules
-                        d.additional_options(parser)                        
+                        # Load additional args.from Modules
+                        # Generate sub parser
+                        short = a.split("_")[0]
+                        module_parser = parser.add_parser(short)
+                        d.additional_options(module_parser)
                         res[a] = d
                     except:
                         print("Error loading module %s" % a)
     return res
 
 if __name__ == "__main__" :
-    # Create parser
-    parser = OptionParser()
+
+    parser = argparse.ArgumentParser()
     print("Loading Modules...")
-    m = load_modules(parser)
-    # build_service options
-    parser.add_option("-s","--service",
-            help="Name of the SERVICE to run e.g. shell",metavar="SERVICE")
-    parser.add_option("-l","--list",
-            action="store_true",
-            help="List all SERVICE")
-    parser.add_option("-d","--describe",
-            help="Describe a SERVICE",metavar="SERVICE")
-
-    (options,args) = parser.parse_args()
-    if options.list:
-        d = []
-        for i in m.keys():
-            if ".py" not in i:
-                d.append(i)
-        print("Services installed: " + str(d))
-        exit(0)
-    if options.describe:
-        s = options.describe
-        if not "_service" in options.describe:
-            s = options.describe + "_service"
-        print("Describing service..")
-        try:
-            members = inspect.getmembers(m[s],predicate=inspect.ismethod)
-            print(s + " has members:")
-            for m in members:
-                print m[0]
     
-        except:
-            print("Service not found")
-        exit(0)
-    if not options.service:
-        print("Please provide the name of a service module to run...")
-        exit(0)
-    # Run selected module
-    service = options.service
-    if not "_service" in options.service:
-        service = options.service + "_service"
-    if not service in m.keys():
-        print("Service not found: %s" % service)
-        exit(0)
+    subparsers = parser.add_subparsers(help="You can get submodule specific help with [module name] --help",
+            dest="subparser_name")
+    m = load_modules(subparsers)
 
-    m[service].run(options)
+    args = parser.parse_args()
+    if "_service" not in args.subparser_name:
+        args.subparser_name += "_service"
+    m[args.subparser_name].run(args)

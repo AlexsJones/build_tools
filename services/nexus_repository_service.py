@@ -3,7 +3,7 @@
 #     File Name           :     services/nexus_repository_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-11-14 13:27]
-#     Last Modified       :     [2016-11-14 15:28]
+#     Last Modified       :     [2016-11-14 16:18]
 #     Description         :      
 #################################################################################
 import requests
@@ -18,26 +18,29 @@ import urllib2
 import base64
 register_openers()
 
+
 class nexus_repository_service():
+
     def additional_options(self, parser):
-        parser.add_option("--nexus_command",
+        parser.add_argument("--nexus_command",
                 help="nexus COMMAND to execute: upload|download|delete",
                 metavar="COMMAND")
-        parser.add_option("--nexus_server",
+        parser.add_argument("--nexus_server",
                 help="nexus server url e.g. http://server/repository/myrepo/test.txt")
-        parser.add_option("--nexus_user",
+        parser.add_argument("--nexus_user",
                 help="nexus user to login with")
-        parser.add_option("--nexus_password",
+        parser.add_argument("--nexus_password",
                 help="nexus password to login with")
-        parser.add_option("--nexus_file",
+        parser.add_argument("--nexus_file",
                 help="file to either upload or download e.g. /home/anon/file.txt")
-        parser.add_option("--nexus_download_file",
+        parser.add_argument("--nexus_download_file",
                 help="path and name for downloaded file")
 
     def __init__(self):
             print("Started Nexus repository Service...")
+
     def run(self, options):
-        if not options.nexus_command:
+        if not options.command:
             print("No command given to run...")
             exit(0) 
 
@@ -45,7 +48,7 @@ class nexus_repository_service():
             print("Please give --nexus_user and --nexus_password")
             sys.exit(1)
 
-        if options.nexus_command in "upload":
+        if options.command in "upload":
             print("Starting upload...")
             url = options.nexus_server
             dissambled = urlparse(url)
@@ -56,7 +59,7 @@ class nexus_repository_service():
                 content = f.read()
                 request = urllib2.Request(url, content, headers)
                 
-                base = base64.encodestring("%s:%s" % (options.nexus_user, 
+                base = base64.encodestring("%s:%s" % (options.nexus_user,
                     options.nexus_password)).replace('\n','')
                 request.add_header("Content-type","application/x-gtar")
                 request.add_header("Authorization", "Basic %s" % base) 
@@ -64,7 +67,7 @@ class nexus_repository_service():
                 response = urllib2.urlopen(request)
                 print(response.getcode())
 
-        if options.nexus_command in "download":
+        if options.command in "download":
             print("Starting download...")
             url = options.nexus_server
             response = requests.get(url, stream=True, auth=HTTPBasicAuth(
@@ -78,7 +81,7 @@ class nexus_repository_service():
                     if chunk: # filter out keep-alive new chunks
                         f.write(chunk)
 
-        if options.nexus_command == "delete":
+        if options.command == "delete":
             print("Deleting now...")
             url = options.nexus_server
             response = requests.delete(url, auth=HTTPBasicAuth(options.nexus_user, options.nexus_password))
