@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #################################################################################
-#     File Name           :     services/nexus_repository_service.py
+#     File Name           :     services/nexus_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-11-14 13:27]
 #     Last Modified       :     [2016-11-14 16:18]
@@ -10,19 +10,17 @@ import requests
 from requests.auth import HTTPBasicAuth
 from urlparse import urlparse 
 from os.path import splitext,basename
-import shutil
 import sys
-from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 import urllib2 
 import base64
 register_openers()
 
 
-class nexus_repository_service():
+class nexus_service():
 
     def additional_options(self, parser):
-        parser.add_argument("--nexus_command",
+        parser.add_argument("--command",
                 help="nexus COMMAND to execute: upload|download|delete",
                 metavar="COMMAND")
         parser.add_argument("--nexus_server",
