@@ -3,7 +3,7 @@
 #     File Name           :     services/build_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 14:36]
-#     Last Modified       :     [2016-11-14 15:48]
+#     Last Modified       :     [2016-11-15 15:24]
 #     Description         :      
 #################################################################################
 import os
@@ -15,7 +15,7 @@ class build_service():
     def additional_options(self, parser):
 
         parser.add_argument("--command",
-                help="use to decompress|compress directory")
+                help="use to decompress|compress directory, or version to create/update a file")
         parser.add_argument("--build_folder",
                 help="build folder pass to compress or decompress")
         parser.add_argument("--build_increment",
@@ -51,7 +51,7 @@ class build_service():
 
     def run(self, options):
         print("Running with options %s" % options)
-        if options.command:
+        if options.command == "version":
             if os.path.isdir(options.build_increment):
                 print("Cannot increment a directory...")
                 exit(0)
