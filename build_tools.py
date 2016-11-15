@@ -3,13 +3,14 @@
 #     File Name           :     build_service.py
 #     Created By          :     AlexsJones
 #     Creation Date       :     [2016-09-19 11:31]
-#     Last Modified       :     [2016-11-14 16:33]
+#     Last Modified       :     [2016-11-15 10:26]
 #     Description         :
 #################################################################################
 import os
 import sys
 import inspect
 import argparse
+import inspect
 # Configuration
 SERVICES_PATH="services"
 # ------------------------
@@ -29,7 +30,10 @@ SERVICES_PATH="services"
 
 def load_modules(parser):
     res = {}
-    lst = os.listdir(SERVICES_PATH)
+
+    exe_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) 
+
+    lst = os.listdir(exe_path + "/" + SERVICES_PATH)
     dir = []
     for d in lst:
         s = os.path.abspath("services") + os.sep + d
