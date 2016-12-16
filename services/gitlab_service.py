@@ -3,7 +3,7 @@
 #     File Name           :     services/gitlab_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-21 13:59]
-#     Last Modified       :     [2016-11-14 15:42]
+#     Last Modified       :     [2016-12-16 20:01]
 #     Description         :      
 #################################################################################
 import gitlab
@@ -60,4 +60,4 @@ class gitlab_service():
 
             build = project.builds.get(options.gitlab_build_number)
 
-            print build
+            print(build)
