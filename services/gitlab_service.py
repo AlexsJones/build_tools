@@ -71,6 +71,9 @@ class gitlab_service():
             if options.gitlab_status not in ["passed", "canceled", "failed", "pending"]:
                 print ("Invalid Status given")
                 exit(0)
+            if options.gitlab_build_number:
+                print ("Please don't define a build number")
+                exit(0)
 
             gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
             gl.auth()
