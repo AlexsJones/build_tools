@@ -4,7 +4,7 @@
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-21 13:59]
 #     Last Modified       :     [2016-12-16 20:01]
-#     Description         :      
+#     Description         :
 #################################################################################
 import gitlab
 
@@ -23,6 +23,8 @@ class gitlab_service():
                 help="gitlab server url e.g. http://localhost")
         parser.add_argument("--gitlab_token",
                 help="gitlab private token  to login with")
+        parser.add_argument("--gitlab_status",
+                help="gitlab build status e.g. failed")
 
     def __init__(self):
         print("Started Gitlab Service...")
@@ -42,7 +44,7 @@ class gitlab_service():
 
             gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
             gl.auth()
-        
+
         if "log" in options.command:
             if not options.gitlab_build_number:
                 print("Requires build ID as the gitlab_build_number")
@@ -61,3 +63,29 @@ class gitlab_service():
             build = project.builds.get(options.gitlab_build_number)
 
             print(build)
+        if "list_builds" in options.command:
+            if not options.gitlab_status:
+                print ("Requires a status to be given")
+                exit(0)
+
+            if options.gitlab_status not in ["passed", "canceled", "failed", "pending", "running"]:
+                print ("Invalid Status given")
+                exit(0)
+            if options.gitlab_build_number:
+                print ("Please don't define a build number")
+                exit(0)
+
+            gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
+            gl.auth()
+
+            project = gl.projects.get(options.gitlab_project)
+            builds = project.builds.list()
+            fails = []
+            for k in builds:
+                if k.status == options.gitlab_status:
+                    fails.append(k)
+            if not fails:
+                print ("No builds were makred as " + options.gitlab_status )
+            else:
+                print ("The folloeing Builds were marked as" + options.gitlab_status)
+                print (fails)
