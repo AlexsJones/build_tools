@@ -23,8 +23,8 @@ class gitlab_service():
                 help="gitlab server url e.g. http://localhost")
         parser.add_argument("--gitlab_token",
                 help="gitlab private token  to login with")
-        parser.add_argument("--gitlab_failiure",
-                help="Not implemented yet")
+        parser.add_argument("--gitlab_status",
+                help="gitlab build status e.g. failed")
 
     def __init__(self):
         print("Started Gitlab Service...")
@@ -63,3 +63,11 @@ class gitlab_service():
             build = project.builds.get(options.gitlab_build_number)
 
             print(build)
+        if "list_builds" in options.command:
+            if not options.gitlab_status:
+                print ("Requires a status to be given")
+                exit(0)
+            if options.gitlab_status not in ["passed", "canceled", "failed", "pending"]:
+                print ("Invalid Status given")
+                exit(0)
+            print("It Works")
