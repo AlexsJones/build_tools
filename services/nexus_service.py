@@ -4,11 +4,10 @@
 #     Created By          :     anon
 #     Creation Date       :     [2016-11-14 13:27]
 #     Last Modified       :     [2016-12-21 15:27]
-#     Description         :      
+#     Description         :
 #################################################################################
 import requests
 from requests.auth import HTTPBasicAuth
-from urllib.parse import urlparse
 from os.path import splitext,basename
 import sys
 import urllib.request, urllib.error, urllib.parse
@@ -38,7 +37,7 @@ class nexus_service():
     def run(self, options):
         if not options.command:
             print("No command given to run...")
-            exit(0) 
+            exit(0)
 
         if not options.nexus_user or not options.nexus_password:
             print("Please give --nexus_user and --nexus_password")
@@ -54,11 +53,11 @@ class nexus_service():
             with open(options.nexus_file, 'rb') as f:
                 content = f.read()
                 request = urllib.request.Request(url, content, headers)
-                
+
                 base = base64.encodestring("%s:%s" % (options.nexus_user,
                     options.nexus_password)).replace('\n','')
                 request.add_header("Content-type","application/x-gtar")
-                request.add_header("Authorization", "Basic %s" % base) 
+                request.add_header("Authorization", "Basic %s" % base)
                 request.get_method = lambda: 'PUT'
                 response = urllib.request.urlopen(request)
                 print((response.getcode()))
@@ -73,7 +72,7 @@ class nexus_service():
             filename, ext = splitext(basename(dissambled.path))
 
             with open(options.nexus_download_file, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=1024): 
+                for chunk in response.iter_content(chunk_size=1024):
                     if chunk: # filter out keep-alive new chunks
                         f.write(chunk)
 
