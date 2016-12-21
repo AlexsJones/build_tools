@@ -4,7 +4,7 @@
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-21 13:59]
 #     Last Modified       :     [2016-12-16 20:01]
-#     Description         :      
+#     Description         :
 #################################################################################
 import gitlab
 
@@ -23,6 +23,8 @@ class gitlab_service():
                 help="gitlab server url e.g. http://localhost")
         parser.add_argument("--gitlab_token",
                 help="gitlab private token  to login with")
+        parser.add_argument("--gitlab_failiure",
+                help="Not implemented yet")
 
     def __init__(self):
         print("Started Gitlab Service...")
@@ -42,7 +44,7 @@ class gitlab_service():
 
             gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
             gl.auth()
-        
+
         if "log" in options.command:
             if not options.gitlab_build_number:
                 print("Requires build ID as the gitlab_build_number")
