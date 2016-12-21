@@ -63,6 +63,7 @@ class gitlab_service():
             build = project.builds.get(options.gitlab_build_number)
 
             print(build)
+
         if "list_builds" in options.command:
             if not options.gitlab_status:
                 print ("Requires a status to be given")
@@ -87,5 +88,5 @@ class gitlab_service():
             if not fails:
                 print ("No builds were makred as " + options.gitlab_status )
             else:
-                print ("The folloeing Builds were marked as" + options.gitlab_status)
+                print ("The folloeing Builds were marked as " + options.gitlab_status)
                 print (fails)
