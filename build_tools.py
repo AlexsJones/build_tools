@@ -28,6 +28,7 @@ SERVICES_PATH="services"
 #       print("Running with %s, args.command)
 # -----------------------
 
+
 def load_modules(parser):
     res = {}
 
@@ -62,10 +63,10 @@ def load_modules(parser):
                         d.additional_options(module_parser)
                         res[a] = d
                     except:
-                        print("Error loading module %s" % a)
+                        print(("Error loading module %s" % a))
     return res
 
-if __name__ == "__main__" :
+if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     print("Loading Modules...")
@@ -75,6 +76,9 @@ if __name__ == "__main__" :
     m = load_modules(subparsers)
 
     args = parser.parse_args()
-    if "_service" not in args.subparser_name:
+    if args.subparser_name is not None and "_service not in args.subparser_name":
         args.subparser_name += "_service"
-    m[args.subparser_name].run(args)
+        m[args.subparser_name].run(args)
+    else:
+        print("Please select a module to run")
+
