@@ -3,11 +3,11 @@
 #     File Name           :     services/teamcity_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-19 14:55]
-#     Last Modified       :     [2016-11-14 15:42]
+#     Last Modified       :     [2016-12-21 15:29]
 #     Description         :      
 #################################################################################
 import json
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import base64
 import requests
 import sys
@@ -37,7 +37,7 @@ class teamcity_service():
         print("Started Teamcity Service...")
 
     def run(self, options):
-        print("Running with options %s" % options)
+        print(("Running with options %s" % options))
         if not options.command:
             print("No command given to run...")
             exit(0)
@@ -62,9 +62,9 @@ class teamcity_service():
                 options.teamcity_password),timeout=10)
             xmldoc = minidom.parseString(r.text)
             itemlist = xmldoc.getElementsByTagName('build')
-            print("Started build with id %s and is available to view here %s" % 
-                    (itemlist[0].attributes['id'].value,
-                        itemlist[0].attributes['webUrl'].value))
+            print(("Started build with id %s and is available to view here %s" %
+                   (itemlist[0].attributes['id'].value,
+                    itemlist[0].attributes['webUrl'].value)))
         if "log" in options.command:
             if not options.teamcity_build_number:
                 print("Requires teamcity_build_number")
@@ -72,4 +72,4 @@ class teamcity_service():
             sub_url = tc_rest_url.replace('/app/rest/','/')
             url = sub_url+ "downloadBuildLog.html?buildId=" + options.teamcity_build_number
             r = requests.get(url,auth=(options.teamcity_user,options.teamcity_password),timeout=10)
-            print(r.text)
+            print((r.text))
