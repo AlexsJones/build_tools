@@ -77,8 +77,9 @@ class gitlab_service():
 
             project = gl.projects.get(options.gitlab_project)
             print ("Vars= ", vars(project))
-            build = project.builds.get(options.gitlab_build_number)
-            print("Build Vars= ", vars(build))
-            status = build.get(options.gitlab_status)
-            print(status)
-            print("It Works")
+            builds = project.builds.list()
+            print("Build Vars= ", builds)
+
+
+            for k in builds:
+                print (k.status)
