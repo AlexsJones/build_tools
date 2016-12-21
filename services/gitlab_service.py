@@ -84,9 +84,12 @@ class gitlab_service():
             fails = []
             for k in builds:
                 if k.status == options.gitlab_status:
-                    fails.append(k)
+                    string_id = str(k.id)
+                    fails.append(string_id)
             if not fails:
                 print ("No builds were makred as " + options.gitlab_status )
             else:
                 print ("The folloeing Builds were marked as " + options.gitlab_status)
-                print (fails)
+                url = "https://gitlab.intranet.sky/ce-devices-ios/Benji/builds/"
+                for i in fails:
+                    print (url + i)
