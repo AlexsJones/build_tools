@@ -68,7 +68,7 @@ class gitlab_service():
                 print ("Requires a status to be given")
                 exit(0)
 
-            if options.gitlab_status not in ["passed", "canceled", "failed", "pending"]:
+            if options.gitlab_status not in ["passed", "canceled", "failed", "pending", "running"]:
                 print ("Invalid Status given")
                 exit(0)
             if options.gitlab_build_number:
@@ -79,10 +79,13 @@ class gitlab_service():
             gl.auth()
 
             project = gl.projects.get(options.gitlab_project)
-            print ("Vars= ", vars(project))
             builds = project.builds.list()
-            print("Build Vars= ", builds)
-
-
+            fails = []
             for k in builds:
-                print (k.status)
+                if k.status == options.gitlab_status:
+                    fails.append(k)
+            if not fails:
+                print ("No builds were makred as " + options.gitlab_status )
+            else:
+                print ("The folloeing Builds were marked as" + options.gitlab_status)
+                print (fails)
