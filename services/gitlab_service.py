@@ -67,7 +67,18 @@ class gitlab_service():
             if not options.gitlab_status:
                 print ("Requires a status to be given")
                 exit(0)
+
             if options.gitlab_status not in ["passed", "canceled", "failed", "pending"]:
                 print ("Invalid Status given")
                 exit(0)
+
+            gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
+            gl.auth()
+
+            project = gl.projects.get(options.gitlab_project)
+            print ("Vars= ", vars(project))
+            build = project.builds.get(options.gitlab_build_number)
+            print("Build Vars= ", vars(build))
+            status = build.get(options.gitlab_status)
+            print(status)
             print("It Works")
