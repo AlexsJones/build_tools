@@ -1,3 +1,5 @@
 language: python
-before_script: sudo apt-get install python3.5 python3.5-dev && sudo apt-get install nmap && sudo apt-get install libffi-dev
-script: pip3.5 install -r requirements && python3.5 ./build_tools.py --help
+python:
+  - "3.5"
+before_script: sudo apt-get install nmap && sudo apt-get install libffi-dev
+script: pip install -r requirements && python3.5 ./build_tools.py --help
