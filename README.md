@@ -18,9 +18,9 @@ For use in CI build steps to do actual complex tasks that CI usually wont do (Or
 | Nexus   | Create, Delete, Download nexus repo artefacts |
 | Gitlab  | Start remote build & download logs            |
 ---
-###Verion
+###Version
 
-Python 2.7 with virtualenv
+Python 3.5
 
 ###Usage
 
@@ -28,8 +28,13 @@ For help please see module arguments with
 
 ```
 source env/bin/activate
-pip2.7 install -r requirements
-python2.7 ./build_tools.py [module_name] --help
+install -r requirements
+python ./build_tools.py [module_name] --help
 
 ```
 
+###Requirements
+```
+libffi 
+nmap
+```
