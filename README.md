@@ -1,4 +1,7 @@
 ![buildIcon](http://i.imgur.com/xzrllfC.png)
+
+[![Build Status](https://travis-ci.org/AlexsJones/build_tools.svg?branch=master)](https://travis-ci.org/AlexsJones/build_tools)
+
 ##build tools
 ===========
 
