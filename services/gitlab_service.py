@@ -79,7 +79,7 @@ class gitlab_service():
             gl.auth()
 
             project = gl.projects.get(options.gitlab_project)
-            builds = project.builds.list(page=)
+            builds = project.builds.list()
             fails = []
             for k in builds:
                 if k.status == options.gitlab_status:
