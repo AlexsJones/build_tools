@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/ed11e/build_tools.svg?branch=master)](https://travis-ci.org/ed11e/build_tools)
 
 ![buildIcon](http://i.imgur.com/xzrllfC.png)
 ##build tools
