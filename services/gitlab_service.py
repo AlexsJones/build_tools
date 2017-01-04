@@ -8,7 +8,6 @@
 #################################################################################
 import gitlab
 
-
 class gitlab_service():
 
     def additional_options(self, parser):
@@ -80,7 +79,7 @@ class gitlab_service():
             gl.auth()
 
             project = gl.projects.get(options.gitlab_project)
-            builds = project.builds.list()
+            builds = project.builds.list(page=)
             fails = []
             for k in builds:
                 if k.status == options.gitlab_status:
