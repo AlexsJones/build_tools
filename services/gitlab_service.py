@@ -13,7 +13,7 @@ class gitlab_service():
 
     def additional_options(self, parser):
         parser.add_argument("--command",
-                help="gitlab COMMAND to execute: trigger|log",
+                help="gitlab COMMAND to execute: trigger|log|print_stats",
                 metavar="COMMAND")
         parser.add_argument("--gitlab_project",
                 help="gitlab project e.g. username/project")
@@ -28,6 +28,11 @@ class gitlab_service():
 
     def __init__(self):
         print("Started Gitlab Service...")
+
+    def print_stats(self,p):
+        mr = p.mergerequests.list(per_page=1500)
+        for m in mr:
+            print(m)
 
     def run(self, options):
         print("Running with options %s " % options)
@@ -89,7 +94,16 @@ class gitlab_service():
             if not fails:
                 print ("No builds were makred as " + options.gitlab_status )
             else:
-                print ("The folloeing Builds were marked as " + options.gitlab_status)
+                print ("The following Builds were marked as " + options.gitlab_status)
                 url = "https://gitlab.intranet.sky/ce-devices-ios/Benji/builds/"
                 for i in fails:
                     print (url + i)
+
+        if "print_stats":
+            if not options.gitlab_project:
+                print("Requires gitlab project e.g. myname/project")
+                exit(0)
+            gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
+            gl.auth()
+            p = gl.projects.get(options.gitlab_project)
+            self.print_stats(p)
