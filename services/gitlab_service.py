@@ -140,6 +140,7 @@ class gitlab_service():
                 if "WIP" in merge.title:
                     if datetime_object > two_weeks_ago:
                         user_info[merge.author.name].wip_requests.append(merge)
+                    return
 
                 if not merge.state:
                     return
