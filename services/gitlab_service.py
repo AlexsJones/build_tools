@@ -120,49 +120,59 @@ class gitlab_service():
                 print("Requires gitlab project e.g. myname/project")
                 exit(0)
 
-            open_merge_requests = set([])
-            closed_merge_requests = set([])
-            users_with_open_requests = set([])
-            total_users_with_open_requests = []
-            users_with_closed_requests = set([])
-            total_users_with_closed_requests = []
+            class UserInfo:
+                def __init__(self, name):
+                    self.name = name
+                    self.closed_requests = []
+                    self.open_requests = []
+                    self.wip_requests = []
+
+            user_info = dict()
 
             two_weeks_ago = datetime.now() - timedelta(days=14)
 
             def comparison_operator(merge):
+                datetime_object = self.parse_datetime(merge.created_at)
+
+                if merge.author.name not in user_info:
+                    user_info[merge.author.name] = UserInfo(merge.author.name)
+
+                if "WIP" in merge.title:
+                    if datetime_object > two_weeks_ago:
+                        user_info[merge.author.name].wip_requests.append(merge)
+
                 if not merge.state:
                     return
                 if merge.state == 'opened':
-                    datetime_object = self.parse_datetime(merge.created_at)
-                    if datetime_object > two_weeks_ago:
-                        open_merge_requests.add(merge.title)
-                        users_with_open_requests.add(merge.author.name)
-                        total_users_with_open_requests.append(merge.author.name)
+                        user_info[merge.author.name].open_requests.append(merge)
 
                 if merge.state == 'closed':
-                    datetime_object = self.parse_datetime(merge.created_at)
-                    if datetime_object > two_weeks_ago:
-                        closed_merge_requests.add(merge.title)
-                        users_with_closed_requests.add(merge.author.name)
-                        total_users_with_closed_requests.append(merge.author.name)
+                        user_info[merge.author.name].closed_requests.append(merge)
 
             p = gl.projects.get(options.gitlab_project)
             self.walk_merge_request(p, options.gitlab_max_size, comparison_operator)
 
-            print("Closed Merge requests less than two weeks old ----------------------------")
-            for b in closed_merge_requests:
-                print(b)
+            to = 0
+            tc = 0
+            tw = 0
+            print("Over the past two weeks ----------------------------------------------------")
+            for u in user_info:
+                user = user_info[u]
+                print("User %s has %d open request(s), %d closed request(s) and %d wip request(s)"
+                      % (user.name, len(user.open_requests), len(user.closed_requests), len(user.wip_requests)))
 
-            print("--------------------------------------------------------------------------")
-            print("Open Merge requests less than two weeks old ------------------------------")
-            for b in open_merge_requests:
-                print(b)
-            print("--------------------------------------------------------------------------")
-            print("Users with open requests -------------------------------------------------")
-            for user in users_with_open_requests:
-                print("User %s has %d request(s) open" % (user, total_users_with_open_requests.count(user)))
+                if len(user.open_requests) > 0:
+                    for m in user.open_requests:
+                        print("---OPEN-->%s" % m.title)
+                        to += 1
 
-            print("Users with closed requests -----------------------------------------------")
-
-            for user in users_with_closed_requests:
-                print("User %s has %d request(s) closed" % (user, total_users_with_closed_requests.count(user)))
+                if len(user.closed_requests) > 0:
+                    for m in user.closed_requests:
+                        print("---CLOSED-->%s" % m.title)
+                        tc += 1
+                if len(user.wip_requests) > 0:
+                    for m in user.wip_requests:
+                        print("---WIP-->%s" % m.title)
+                        tw += 1
+            print("----------------------------------------------------------------------------")
+            print("Total open requests %d, closed requests %d, wip requests %d" % (to, tc, tw))
