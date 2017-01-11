@@ -7,7 +7,11 @@
 #     Description         :
 #################################################################################
 import gitlab
+<<<<<<< HEAD
 from gitlab import GitlabGetError
+=======
+import datetime
+>>>>>>> upstream/master
 
 class gitlab_service():
 
@@ -32,11 +36,17 @@ class gitlab_service():
     def __init__(self):
         print("Started Gitlab Service...")
 
+    def parse_datetime(d):
+        s = d.split('-')
+        sub_split = s[2].split('T')
+        f = "%s/%s/%s" % (sub_split[0], s[1], s[0][-2:])
+        dt = datetime.strptime(f, "%d/%m/%y")
+        return dt
+
     def walk_merge_request(self,project,max_size, comparison_operator=None):
         mr = project.mergerequests.list(per_page=max_size)
         for m in mr:
-            if m:
-                comparison_operator(m)
+            comparison_operator(m)
 
     def run(self, options):
         print("Running with options %s " % options)
@@ -104,6 +114,7 @@ class gitlab_service():
                     branches.add(merge.source_branch)
             p = gl.projects.get(options.gitlab_project)
             self.walk_merge_request(p,options.gitlab_max_size, comparison)
+            self.walk_merge_request(p, options.gitlab_max_size, comparison)
             for b in branches:
                 try:
                     branch = p.branches.get(b)
@@ -116,5 +127,8 @@ class gitlab_service():
                 print("Requires gitlab project e.g. myname/project")
                 exit(0)
 
+            def comparison_operator(merge):
+                pass
+
             p = gl.projects.get(options.gitlab_project)
-            self.walk_merge_request(p,options.gitlab_max_size)
+            self.walk_merge_request(p, options.gitlab_max_size,comparison_operator)
