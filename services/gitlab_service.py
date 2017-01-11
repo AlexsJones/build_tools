@@ -13,7 +13,7 @@ class gitlab_service():
 
     def additional_options(self, parser):
         parser.add_argument("--command",
-                help="gitlab COMMAND to execute: trigger|log|print_stats",
+                help="gitlab COMMAND to execute: log|print_stats|suggest_prune_branches",
                 metavar="COMMAND")
         parser.add_argument("--gitlab_project",
                 help="gitlab project e.g. username/project")
@@ -25,48 +25,44 @@ class gitlab_service():
                 help="gitlab private token  to login with")
         parser.add_argument("--gitlab_status",
                 help="gitlab build status e.g. failed")
+        parser.add_argument("--gitlab_max_size",
+                            help="max size of pagination (branches/merges", default=1500)
 
     def __init__(self):
         print("Started Gitlab Service...")
 
-    def print_stats(self,p):
-        mr = p.mergerequests.list(per_page=1500)
+    def walk_merge_request(self,project,max_size, comparison_operator=None):
+        mr = project.mergerequests.list(per_page=max_size)
         for m in mr:
-            print(m)
+            if m:
+                comparison_operator(m)
 
     def run(self, options):
         print("Running with options %s " % options)
         if not options.command:
             print("No command given to run...")
             exit(0)
-        if not options.gitlab_server or not options.gitlab_token:
+        if not options.gitlab_server:
             print("No gitlab server defined")
             exit(0)
-        if "trigger" in options.command:
-            if not options.gitlab_build_number:
-                print("Requires build ID as the gitlab_build_number")
-                exit(0)
+        if not options.gitlab_token:
+            print("No gitlab token defined")
+            exit(0)
 
-            gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
-            gl.auth()
+        gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
+        gl.auth()
 
         if "log" in options.command:
-            if not options.gitlab_build_number:
-                print("Requires build ID as the gitlab_build_number")
-                exit(0)
             if not options.gitlab_build_number:
                 print("Requires build NUMBER as the gitlab_build_number")
                 exit(0)
 
-            gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
-            gl.auth()
             if not options.gitlab_project:
                 print("Requires gitlab project")
                 exit(0)
+
             project = gl.projects.get(options.gitlab_project)
-
             build = project.builds.get(options.gitlab_build_number)
-
             print(build)
 
         if "list_builds" in options.command:
@@ -74,15 +70,9 @@ class gitlab_service():
                 print ("Requires a status to be given")
                 exit(0)
 
-            if options.gitlab_status not in ["passed", "canceled", "failed", "pending", "running"]:
-                print ("Invalid Status given")
-                exit(0)
             if options.gitlab_build_number:
                 print ("Please don't define a build number")
                 exit(0)
-
-            gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
-            gl.auth()
 
             project = gl.projects.get(options.gitlab_project)
             builds = project.builds.list()
@@ -99,11 +89,26 @@ class gitlab_service():
                 for i in fails:
                     print (url + i)
 
+        if "suggest_prune_branches":
+            if not options.gitlab_project:
+                print("Requires gitlab project e.g. myname/project")
+                exit(0)
+
+            branches = set([])
+
+            def comparison(merge):
+                if merge.state == 'merged':
+                    branches.add(merge.source_branch)
+            p = gl.projects.get(options.gitlab_project)
+            self.walk_merge_request(p,options.gitlab_max_size, comparison)
+
+            for b in branches:
+                print(b)
+
         if "print_stats":
             if not options.gitlab_project:
                 print("Requires gitlab project e.g. myname/project")
                 exit(0)
-            gl = gitlab.Gitlab(options.gitlab_server, options.gitlab_token)
-            gl.auth()
+
             p = gl.projects.get(options.gitlab_project)
-            self.print_stats(p)
+            self.walk_merge_request(p,options.gitlab_max_size)
