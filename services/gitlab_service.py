@@ -8,6 +8,8 @@
 #################################################################################
 import gitlab
 import datetime
+from datetime import datetime, timedelta
+
 
 class gitlab_service():
 
@@ -26,12 +28,12 @@ class gitlab_service():
         parser.add_argument("--gitlab_status",
                 help="gitlab build status e.g. failed")
         parser.add_argument("--gitlab_max_size",
-                            help="max size of pagination (branches/merges", default=1500)
+                            help="max size of pagination (branches/merges", default=2000)
 
     def __init__(self):
         print("Started Gitlab Service...")
 
-    def parse_datetime(d):
+    def parse_datetime(self, d):
         s = d.split('-')
         sub_split = s[2].split('T')
         f = "%s/%s/%s" % (sub_split[0], s[1], s[0][-2:])
@@ -95,7 +97,7 @@ class gitlab_service():
                 for i in fails:
                     print (url + i)
 
-        if "suggest_prune_branches":
+        if "suggest_prune_branches" in options.command:
             if not options.gitlab_project:
                 print("Requires gitlab project e.g. myname/project")
                 exit(0)
@@ -113,13 +115,54 @@ class gitlab_service():
             for b in branches:
                 print(b)
 
-        if "print_stats":
+        if "print_stats" in options.command:
             if not options.gitlab_project:
                 print("Requires gitlab project e.g. myname/project")
                 exit(0)
 
+            open_merge_requests = set([])
+            closed_merge_requests = set([])
+            users_with_open_requests = set([])
+            total_users_with_open_requests = []
+            users_with_closed_requests = set([])
+            total_users_with_closed_requests = []
+
+            two_weeks_ago = datetime.now() - timedelta(days=14)
+
             def comparison_operator(merge):
-                pass
+                if not merge.state:
+                    return
+                if merge.state == 'opened':
+                    datetime_object = self.parse_datetime(merge.created_at)
+                    if datetime_object > two_weeks_ago:
+                        open_merge_requests.add(merge.title)
+                        users_with_open_requests.add(merge.author.name)
+                        total_users_with_open_requests.append(merge.author.name)
+
+                if merge.state == 'closed':
+                    datetime_object = self.parse_datetime(merge.created_at)
+                    if datetime_object > two_weeks_ago:
+                        closed_merge_requests.add(merge.title)
+                        users_with_closed_requests.add(merge.author.name)
+                        total_users_with_closed_requests.append(merge.author.name)
 
             p = gl.projects.get(options.gitlab_project)
-            self.walk_merge_request(p, options.gitlab_max_size,comparison_operator)
+            self.walk_merge_request(p, options.gitlab_max_size, comparison_operator)
+
+            print("Closed Merge requests less than two weeks old ----------------------------")
+            for b in closed_merge_requests:
+                print(b)
+
+            print("--------------------------------------------------------------------------")
+            print("Open Merge requests less than two weeks old ------------------------------")
+            for b in open_merge_requests:
+                print(b)
+            print("--------------------------------------------------------------------------")
+            print("Users with open requests -------------------------------------------------")
+            for user in users_with_open_requests:
+                print("User %s has %d request(s) open" % (user, total_users_with_open_requests.count(user)))
+
+            print("Users with closed requests -----------------------------------------------")
+
+            for user in users_with_closed_requests:
+                print("User %s has %d request(s) closed" % (user, total_users_with_closed_requests.count(user)))
