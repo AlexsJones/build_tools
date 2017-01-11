@@ -7,11 +7,8 @@
 #     Description         :
 #################################################################################
 import gitlab
-<<<<<<< HEAD
 from gitlab import GitlabGetError
-=======
 import datetime
->>>>>>> upstream/master
 
 class gitlab_service():
 
