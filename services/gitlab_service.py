@@ -7,11 +7,13 @@
 #     Description         :
 #################################################################################
 import gitlab
+from gitlab import GitlabGetError
 import datetime
 from datetime import datetime, timedelta
 
 
 class gitlab_service():
+
 
     def additional_options(self, parser):
         parser.add_argument("--command",
@@ -110,10 +112,14 @@ class gitlab_service():
                 if merge.state == 'merged':
                     branches.add(merge.source_branch)
             p = gl.projects.get(options.gitlab_project)
+            self.walk_merge_request(p,options.gitlab_max_size, comparison)
             self.walk_merge_request(p, options.gitlab_max_size, comparison)
-
             for b in branches:
-                print(b)
+                try:
+                    branch = p.branches.get(b)
+                    print(branch.name)
+                except GitlabGetError:
+                    pass
 
         if "print_stats" in options.command:
             if not options.gitlab_project:
