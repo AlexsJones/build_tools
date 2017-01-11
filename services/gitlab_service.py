@@ -8,6 +8,7 @@
 #################################################################################
 import gitlab
 from gitlab import GitlabGetError
+
 class gitlab_service():
 
 
@@ -101,13 +102,12 @@ class gitlab_service():
                     branches.add(merge.source_branch)
             p = gl.projects.get(options.gitlab_project)
             self.walk_merge_request(p,options.gitlab_max_size, comparison)
-
             for b in branches:
                 try:
                     branch = p.branches.get(b)
+                    print(branch.name)
                 except GitlabGetError:
                     pass
-                print(branch)
 
         if "print_stats":
             if not options.gitlab_project:
