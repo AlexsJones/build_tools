@@ -98,6 +98,8 @@ class gitlab_service():
             branches = set([])
 
             def comparison(merge):
+                if not merge.state:
+                    return
                 if merge.state == 'merged':
                     branches.add(merge.source_branch)
             p = gl.projects.get(options.gitlab_project)
