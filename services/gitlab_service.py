@@ -7,8 +7,9 @@
 #     Description         :
 #################################################################################
 import gitlab
-
+from gitlab import GitlabGetError
 class gitlab_service():
+
 
     def additional_options(self, parser):
         parser.add_argument("--command",
@@ -102,7 +103,11 @@ class gitlab_service():
             self.walk_merge_request(p,options.gitlab_max_size, comparison)
 
             for b in branches:
-                print(b)
+                try:
+                    branch = p.branches.get(b)
+                except GitlabGetError:
+                    pass
+                print(branch)
 
         if "print_stats":
             if not options.gitlab_project:
