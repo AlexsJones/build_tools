@@ -133,18 +133,20 @@ class gitlab_service():
 
             def comparison_operator(merge):
                 datetime_object = self.parse_datetime(merge.created_at)
+                if datetime_object < two_weeks_ago:
+                    return
 
                 if merge.author.name not in user_info:
                     user_info[merge.author.name] = UserInfo(merge.author.name)
 
                 if "WIP" in merge.title:
-                    if datetime_object > two_weeks_ago:
-                        user_info[merge.author.name].wip_requests.append(merge)
+                    user_info[merge.author.name].wip_requests.append(merge)
                     return
 
                 if not merge.state:
                     return
                 if merge.state == 'opened':
+
                         user_info[merge.author.name].open_requests.append(merge)
 
                 if merge.state == 'closed':
