@@ -3,7 +3,7 @@
 #     File Name           :     app.py
 #     Created By          :     jonesax
 #     Creation Date       :     [2017-01-12 11:49]
-#     Last Modified       :     [2017-01-12 12:11]
+#     Last Modified       :     [2017-01-12 14:33]
 #     Description         :
 ##########################################################################
 
@@ -15,7 +15,9 @@ app = Flask(__name__, static_folder='public', template_folder=tmpl_dir)
 
 @app.route("/")
 def index():
-  return render_template('layout.html')
+  return render_template('homepage.html', content = 'hi')
+
+
 
 
 if __name__ == "__main__":
