@@ -40,10 +40,11 @@ class gitlab_service():
         dt = datetime.strptime(f, "%d/%m/%y")
         return dt
 
-    def walk_merge_request(self,project,max_size, comparison_operator=None):
+    def walk_merge_request(self, project, max_size, comparison_operator=None):
         mr = project.mergerequests.list(per_page=max_size)
         for m in mr:
             comparison_operator(m)
+        return mr
 
     def run(self, options):
         print("Running with options %s " % options)
@@ -90,7 +91,7 @@ class gitlab_service():
                     string_id = str(k.id)
                     fails.append(string_id)
             if not fails:
-                print ("No builds were makred as " + options.gitlab_status )
+                print ("No builds were marked as " + options.gitlab_status )
             else:
                 print ("The following Builds were marked as " + options.gitlab_status)
                 url = "https://gitlab.intranet.sky/ce-devices-ios/Benji/builds/"
@@ -110,10 +111,12 @@ class gitlab_service():
                 if merge.state == 'merged':
                     branches.add(merge.source_branch)
             p = gl.projects.get(options.gitlab_project)
-            self.walk_merge_request(p, options.gitlab_max_size, comparison)
+            merge_list = self.walk_merge_request(p, options.gitlab_max_size, comparison)
 
             for b in branches:
                 print(b)
+
+            return merge_list
 
         if "print_stats" in options.command:
             if not options.gitlab_project:
@@ -129,7 +132,7 @@ class gitlab_service():
 
             user_info = dict()
 
-            two_weeks_ago = datetime.now() - timedelta(days=14)
+            two_weeks_ago = datetime.now() - timedelta(days=800)
 
             def comparison_operator(merge):
                 datetime_object = self.parse_datetime(merge.created_at)
@@ -153,7 +156,7 @@ class gitlab_service():
                         user_info[merge.author.name].closed_requests.append(merge)
 
             p = gl.projects.get(options.gitlab_project)
-            self.walk_merge_request(p, options.gitlab_max_size, comparison_operator)
+            merge_list = self.walk_merge_request(p, options.gitlab_max_size, comparison_operator)
 
             to = 0
             tc = 0
@@ -179,3 +182,4 @@ class gitlab_service():
                         tw += 1
             print("----------------------------------------------------------------------------")
             print("Total open requests %d, closed requests %d, wip requests %d" % (to, tc, tw))
+            return merge_list
