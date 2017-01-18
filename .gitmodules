@@ -3,4 +3,4 @@
 
 [submodule "build_tools"]
 	path = build_tools
-	url = git@github.com:AlexsJones/build_tools.git
+	url = https://github.com/AlexsJones/build_tools.git
