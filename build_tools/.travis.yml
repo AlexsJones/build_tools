@@ -1,5 +1,0 @@
-language: python
-python:
-  - "3.5"
-before_script: sudo apt-get install nmap && sudo apt-get install libffi-dev
-script: pip install -r requirements.txt && python ./build_tools.py --help
