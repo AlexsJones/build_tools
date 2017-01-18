@@ -3,7 +3,7 @@
 #     File Name           :     services/gitlab_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-21 13:59]
-#     Last Modified       :     [2016-12-16 20:01]
+#     Last Modified       :     [2017-01-18 09:46]
 #     Description         :
 #################################################################################
 import gitlab
@@ -182,4 +182,4 @@ class gitlab_service():
                         tw += 1
             print("----------------------------------------------------------------------------")
             print("Total open requests %d, closed requests %d, wip requests %d" % (to, tc, tw))
-            return merge_list
+            return merge_list, user_info
