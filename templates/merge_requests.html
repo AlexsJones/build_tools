@@ -2,15 +2,21 @@
 <script src='/public/js/Chart.bundle.min.js'></script>
 
 <div class="container" xmlns="http://www.w3.org/1999/html">
-    <div id="calanders" style="margin-top:80px">
+    <div id="calanders" style="margin-top:80px; display: flex; flex: 1">
         <div id="start-date" style="float: left">
             <h3>Start Date</h3>
             <input id="start" name="start_date" type="date">
         </div>
-        <div id="end-date" style="overflow: hidden">
+        <div id="end-date" style="overflow: hidden; margin-left: 10px">
             <h3>End Date</h3>
             <input id="end" name="end_date" type="date">
         </div>
+        <div id="filter_button" style="margin-top: 57px; margin-left: 10px">
+            <button type="button" onclick="alert('It works!')">
+                Filter Requests
+            </button>
+        </div>
+
     </div>
 
 
