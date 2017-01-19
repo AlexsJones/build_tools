@@ -35,9 +35,9 @@ for x in merge:
     print(x.title)
 
     if "WIP" in x.title:
-        tw +=1
+        tw += 1
     if x.state == 'opened':
-        to +=1
+        to += 1
     if x.state == 'closed':
         tc += 1
 
