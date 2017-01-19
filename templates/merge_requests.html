@@ -1,18 +1,20 @@
 {% include 'partials/header.html' %}
 <script src='/public/js/Chart.bundle.min.js'></script>
+
 <div class="container" xmlns="http://www.w3.org/1999/html">
-        <div id="calander">
-        <link rel="stylesheet" type="text/css" href="/public/css/datepicker.css" />
-          <h1>Date Picker Example</h1>
-          <p>Start Date / Time:<br />
-            <input id="start_dt" class='datepicker' size='11' title='D-MMM-YYYY' />
-          </p>
-          <p>End Date:<br />
-            <input id="end_dt" class='datepicker' size='11' title='D-MMM-YYYY' />
-          </p>
+    <div id="calanders" style="margin-top:80px">
+        <div id="start-date" style="float: left">
+            <h3>Start Date</h3>
+            <input id="start" name="start_date" type="date">
+        </div>
+        <div id="end-date" style="overflow: hidden">
+            <h3>End Date</h3>
+            <input id="end" name="end_date" type="date">
+        </div>
     </div>
 
-       <table class="table" style="margin-top: 100px;">
+
+    <table class="table" style="margin-top: 50px;">
 
           <thead>
           <tr>
@@ -38,9 +40,6 @@
           </tbody>
 
       </table>
-
-
-
 
     <div id="open-canvas-holder" style="width:33%; float: left">
         <label for="open-chart-area">
