@@ -29,7 +29,15 @@ app = Flask(__name__, static_folder='public', template_folder=tmpl_dir)
 
 @app.route("/")
 def index():
-    return render_template('homepage.html', user_info=user_info)
+    return render_template('homepage.html')
+
+@app.route("/homepage")
+def homepage():
+    return render_template('homepage.html')
+
+@app.route("/merge_requests")
+def mrege_requests():
+    return render_template('merge_requests.html', user_info=user_info)
 
 
 if __name__ == "__main__":
