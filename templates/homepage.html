@@ -2,12 +2,15 @@
 <div class="container" xmlns="http://www.w3.org/1999/html">
     <div id="open-requests-total" style="width:33%; float: left; margin-top: 100px">
         <h2>Open Requests</h2>
+        <h1>{{ total_open }}</h1>
     </div>
     <div id="wip-requests-total" style="width:33%; float: right; margin-top: 100px">
         <h2>WIP Reguests</h2>
+        <h1>{{ total_wip }}</h1>
     </div>
     <div id="closed-requests-total" style="width:33%; margin: 0 auto; margin-top: 120px">
         <h2>Closed Requests</h2>
+        <h1>{{ total_closed }}</h1>
     </div>
 </div>
 {% include 'partials/footer.html' %}

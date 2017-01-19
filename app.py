@@ -23,17 +23,33 @@ gs = gitlab_service()
 
 merge, user_info = gs.run(options)
 
+
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, static_folder='public', template_folder=tmpl_dir)
 
+to = 0
+tc = 0
+tw = 0
+
+for x in merge:
+    print(x.title)
+
+    if "WIP" in x.title:
+        tw +=1
+    if x.state == 'opened':
+        to +=1
+    if x.state == 'closed':
+        tc += 1
+
+to = to-tw
 
 @app.route("/")
 def index():
-    return render_template('homepage.html')
+    return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw)
 
 @app.route("/homepage")
 def homepage():
-    return render_template('homepage.html')
+    return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw)
 
 @app.route("/merge_requests")
 def mrege_requests():
