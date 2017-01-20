@@ -1,9 +1,26 @@
 {% include 'partials/header.html' %}
 <script src='/public/js/Chart.bundle.min.js'></script>
+
 <div class="container" xmlns="http://www.w3.org/1999/html">
+    <div id="calanders" style="margin-top:80px; display: flex; flex: 1">
+        <form  action="/merge_requests" method="POST">
+        <div id="start-date" style="float: left">
+            <h3>Start Date</h3>
+            <input type="date" name="start_date" >
+        </div>
+        <div id="end-date" style="overflow: hidden; margin-left: 10px">
+            <h3>End Date</h3>
+            <input type="date" name="end_date">
+        </div>
+        <div id="filter_button" style="margin-top: 57px; margin-left: 10px">
+            <input type="submit" value="Filter Requests">
+        </div>
+        </form>
+
+    </div>
 
 
-       <table class="table" style="margin-top: 100px;">
+    <table class="table" style="margin-top: 50px;">
 
           <thead>
           <tr>
@@ -29,7 +46,6 @@
           </tbody>
 
       </table>
-
 
     <div id="open-canvas-holder" style="width:33%; float: left">
         <label for="open-chart-area">
