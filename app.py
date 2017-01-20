@@ -27,47 +27,55 @@ def class_helper():
     return options
 
 
+options = class_helper()
+gs = gitlab_service()
 
-@app.route("/")
-def index():
+merge, user_info = gs.run(options)
+for x in merge:
+    x = x.created_at
+    print(x[:10])
 
-    options = class_helper()
 
-    gs = gitlab_service()
-
-    merge, user_info = gs.run(options)
-
-    to = 0
-    tc = 0
-    tw = 0
-
-    for x in merge:
-        print(x.title)
-
-        if "WIP" in x.title:
-            tw += 1
-        if x.state == 'opened':
-            to += 1
-        if x.state == 'closed':
-            tc += 1
-
-    to = to - tw
-    return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw)
-
-@app.route("/merge_requests")
-
-def mrege_requests():
-    options = class_helper()
-    gs = gitlab_service()
-
-    merge, user_info = gs.run(options)
-    return render_template('merge_requests.html', user_info=user_info)
+# @app.route("/")
+# def index():
 #
-# @app.route("/", method=["POST"])
-# def poster():
-#     index();
-#     #url for
-
-
-if __name__ == "__main__":
-  app.run(debug=True,port=2001)
+#     options = class_helper()
+#
+#     gs = gitlab_service()
+#
+#     merge, user_info = gs.run(options)
+#
+#     to = 0
+#     tc = 0
+#     tw = 0
+#
+#     for x in merge:
+#         print(x.title)
+#
+#         if "WIP" in x.title:
+#             tw += 1
+#         if x.state == 'opened':
+#             to += 1
+#         if x.state == 'closed':
+#             tc += 1
+#
+#     to = to - tw
+#     return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw)
+#
+# @app.route("/merge_requests")
+#
+# def mrege_requests():
+#     options = class_helper()
+#     gs = gitlab_service()
+#
+#     merge, user_info = gs.run(options)
+#     return render_template('merge_requests.html', user_info=user_info)
+# #
+# # @app.route("/", method=["POST"])
+# # def poster():
+# #     index();
+# #     #url for
+#
+#
+# if __name__ == "__main__":
+#   app.run(debug=True,port=2001)
