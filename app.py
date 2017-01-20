@@ -15,51 +15,23 @@ from datetime import datetime, timedelta
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, static_folder='public', template_folder=tmpl_dir)
 
+def class_helper():
+    class options():
+        command = "print_stats"
+        gitlab_server = "http://gitlab.intranet.sky"
+        gitlab_token = "QR18DoufKscQAF6HA_BD"
+        gitlab_project = "ce-devices-ios/Benji"
+        gitlab_max_size = 10
+        gitlab_stats_start_date = (datetime.now()-timedelta(days=14)).strftime("%d/%m/%Y")
+        gitlab_stats_end_date = datetime.now().strftime("%d/%m/%Y")
+    return options
+
 
 
 @app.route("/")
 def index():
 
-    class options():
-        command = "print_stats"
-        gitlab_server = "http://gitlab.intranet.sky"
-        gitlab_token = "QR18DoufKscQAF6HA_BD"
-        gitlab_project = "ce-devices-ios/Benji"
-        gitlab_max_size = 10
-        gitlab_stats_start_date = (datetime.now()-timedelta(days=14)).strftime("%d/%m/%Y")
-        gitlab_stats_end_date = datetime.now().strftime("%d/%m/%Y")
-
-    gs = gitlab_service()
-
-    merge, user_info = gs.run(options)
-
-    to = 0
-    tc = 0
-    tw = 0
-
-    for x in merge:
-        print(x.title)
-
-        if "WIP" in x.title:
-            tw += 1
-        if x.state == 'opened':
-            to += 1
-        if x.state == 'closed':
-            tc += 1
-
-    to = to - tw
-    return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw)
-
-@app.route("/homepage")
-def homepage():
-    class options():
-        command = "print_stats"
-        gitlab_server = "http://gitlab.intranet.sky"
-        gitlab_token = "QR18DoufKscQAF6HA_BD"
-        gitlab_project = "ce-devices-ios/Benji"
-        gitlab_max_size = 10
-        gitlab_stats_start_date = (datetime.now()-timedelta(days=14)).strftime("%d/%m/%Y")
-        gitlab_stats_end_date = datetime.now().strftime("%d/%m/%Y")
+    options = class_helper()
 
     gs = gitlab_service()
 
@@ -83,16 +55,9 @@ def homepage():
     return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw)
 
 @app.route("/merge_requests")
-def mrege_requests():
-    class options():
-        command = "print_stats"
-        gitlab_server = "http://gitlab.intranet.sky"
-        gitlab_token = "QR18DoufKscQAF6HA_BD"
-        gitlab_project = "ce-devices-ios/Benji"
-        gitlab_max_size = 10
-        gitlab_stats_start_date = (datetime.now()-timedelta(days=14)).strftime("%d/%m/%Y")
-        gitlab_stats_end_date = datetime.now().strftime("%d/%m/%Y")
 
+def mrege_requests():
+    options = class_helper()
     gs = gitlab_service()
 
     merge, user_info = gs.run(options)
