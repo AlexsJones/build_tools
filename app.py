@@ -67,15 +67,22 @@ def poster():
     gs = gitlab_service()
 
     merge, user_info = gs.run(options)
+
     start_date = request.form['start_date']
+    start_date = datetime.strptime(start_date, '%Y-%m-%d')
     end_date = request.form['end_date']
+    end_date = datetime.strptime(end_date, '%Y-%m-%d')
     filtered_merges = []
+
     for x in merge:
+        x.created_at = x.created_at[:10]
+        x.created_at = datetime.strptime(x.created_at, '%Y-%m-%d')
         if start_date <= x.created_at <= end_date:
             filtered_merges.append(x)
     for p in filtered_merges:
         print(p)
-    return render_template('merge_requests.html', user_info=filtered_merges)
+
+    return render_template('merge_requests.html', user_info=user_info)
 
 if __name__ == "__main__":
   app.run(debug=True,port=2001)
