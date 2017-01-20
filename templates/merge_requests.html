@@ -12,7 +12,7 @@
             <input id="end" name="end_date" type="date">
         </div>
         <div id="filter_button" style="margin-top: 57px; margin-left: 10px">
-            <button type="button" onclick="alert('It works!')">
+            <button type="button" onclick="input();">
                 Filter Requests
             </button>
         </div>
@@ -68,6 +68,22 @@
         </label>
     </div>
         <script>
+      function input() {
+            start_date();
+            end_date();
+       }
+
+       function start_date() {
+          var start_date = document.getElementById("start").value;
+          start_date.toString();
+          return start_date
+        }
+
+        function end_date() {
+            var end_date = document.getElementById("end").value;
+            end_date.toString();
+            return end_date
+         }
 
       var bgcol = [];
       var bgcol1 = [];
