@@ -59,6 +59,7 @@ def index():
 def mrege_requests():
     options = class_helper()
     gs = gitlab_service()
+
     merge, user_info = gs.run(options)
     return render_template('merge_requests.html', user_info=user_info)
 #
