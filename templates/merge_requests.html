@@ -3,19 +3,19 @@
 
 <div class="container" xmlns="http://www.w3.org/1999/html">
     <div id="calanders" style="margin-top:80px; display: flex; flex: 1">
+        <form  action="/merge_requests" method="POST">
         <div id="start-date" style="float: left">
             <h3>Start Date</h3>
-            <input id="start" name="start_date" type="date">
+            <input type="date" name="start_date" >
         </div>
         <div id="end-date" style="overflow: hidden; margin-left: 10px">
             <h3>End Date</h3>
-            <input id="end" name="end_date" type="date">
+            <input type="date" name="end_date">
         </div>
         <div id="filter_button" style="margin-top: 57px; margin-left: 10px">
-            <button type="button" onclick="input();">
-                Filter Requests
-            </button>
+            <input type="submit" value="Filter Requests">
         </div>
+        </form>
 
     </div>
 
@@ -68,22 +68,6 @@
         </label>
     </div>
         <script>
-      function input() {
-            start_date();
-            end_date();
-       }
-
-       function start_date() {
-          var start_date = document.getElementById("start").value;
-          start_date.toString();
-          return start_date
-        }
-
-        function end_date() {
-            var end_date = document.getElementById("end").value;
-            end_date.toString();
-            return end_date
-         }
 
       var bgcol = [];
       var bgcol1 = [];
