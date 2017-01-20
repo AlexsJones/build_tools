@@ -15,11 +15,7 @@ from datetime import datetime, timedelta
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, static_folder='public', template_folder=tmpl_dir)
 
-
-
-@app.route("/")
-def index():
-
+def class_helper():
     class options():
         command = "print_stats"
         gitlab_server = "http://gitlab.intranet.sky"
@@ -28,6 +24,14 @@ def index():
         gitlab_max_size = 10
         gitlab_stats_start_date = (datetime.now()-timedelta(days=14)).strftime("%d/%m/%Y")
         gitlab_stats_end_date = datetime.now().strftime("%d/%m/%Y")
+    return options
+
+
+
+@app.route("/")
+def index():
+
+    options = class_helper()
 
     gs = gitlab_service()
 
@@ -50,13 +54,13 @@ def index():
     to = to - tw
     return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw)
 
-# @app.route("/homepage")
-# def homepage():
-#     return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw)
-#
-# @app.route("/merge_requests")
-# def mrege_requests():
-#     return render_template('merge_requests.html', user_info=user_info)
+@app.route("/merge_requests")
+
+def mrege_requests():
+    options = class_helper()
+    gs = gitlab_service()
+    merge, user_info = gs.run(options)
+    return render_template('merge_requests.html', user_info=user_info)
 #
 # @app.route("/", method=["POST"])
 # def poster():
