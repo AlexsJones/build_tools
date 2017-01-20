@@ -3,7 +3,7 @@
 #     File Name           :     services/gitlab_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-21 13:59]
-#     Last Modified       :     [2017-01-18 09:46]
+#     Last Modified       :     [2017-01-20 08:46]
 #     Description         :
 #################################################################################
 import gitlab
@@ -29,6 +29,10 @@ class gitlab_service():
                 help="gitlab build status e.g. failed")
         parser.add_argument("--gitlab_max_size",
                             help="max size of pagination (branches/merges", default=2000)
+        parser.add_argument("--gitlab_stats_start_date",
+            help="For pruning and stats this overrides the default start date please use DD/M/YYYY")
+        parser.add_argument("--gitlab_stats_end_date",
+            help="For pruning and stats this overrides the default start date please use DD/M/YYYY")
 
     def __init__(self):
         print("Started Gitlab Service...")
@@ -132,11 +136,18 @@ class gitlab_service():
 
             user_info = dict()
 
-            two_weeks_ago = datetime.now() - timedelta(days=800)
+            if options.gitlab_stats_start_date and options.gitlab_stats_end_date:
+                stime = datetime.strptime(options.gitlab_stats_start_date,"%d/%m/%Y")
+                etime = datetime.strptime(options.gitlab_stats_end_date,"%d/%m/%Y")
+            else:
+                print("Requires time range")
+                exit(0)
 
             def comparison_operator(merge):
                 datetime_object = self.parse_datetime(merge.created_at)
-                if datetime_object < two_weeks_ago:
+                if datetime_object < stime:
+                    return
+                if datetime_object > etime:
                     return
 
                 if merge.author.name not in user_info:
@@ -161,7 +172,7 @@ class gitlab_service():
             to = 0
             tc = 0
             tw = 0
-            print("Over the past two weeks ----------------------------------------------------")
+            print("---------------------------------------------------------------------------")
             for u in user_info:
                 user = user_info[u]
                 print("User %s has %d open request(s), %d closed request(s) and %d wip request(s)"
