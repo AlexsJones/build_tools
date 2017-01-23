@@ -10,7 +10,7 @@
 from flask import Flask, Response,render_template, request
 import os
 from build_tools.services.gitlab_service import gitlab_service
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, static_folder='public', template_folder=tmpl_dir)
@@ -107,3 +107,16 @@ def poster():
 
 if __name__ == "__main__":
   app.run(debug=True,port=2001)
+
+def get_last_wednesday():
+    today = date.today()
+    offset = (today.weekday() - 2) % 7
+    last_wednesday = today - timedelta(days=offset)
+    return last_wednesday
+
+
+
+
+
+
+
