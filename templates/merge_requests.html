@@ -8,15 +8,19 @@
             <h3>Start Date</h3>
             <input type="date" name="start_date" >
         </div>
-        <div id="end-date" style="overflow: hidden; margin-left: 10px">
+        <div id="end-date" style="overflow: hidden; margin-left: 10px, margin-top: -100px">
             <h3>End Date</h3>
             <input type="date" name="end_date">
         </div>
-        <div id="filter_button" style="margin-top: 57px; margin-left: 10px">
+        <div id="filter_button" style="overflow: hidden; position:absolute; left:460px; top:136px">
             <input type="submit" value="Filter Requests">
         </div>
         </form>
 
+    </div>
+
+    <div class="page_status">
+        {{ page_status }}
     </div>
 
 

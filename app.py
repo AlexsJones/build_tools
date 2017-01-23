@@ -53,13 +53,13 @@ def index():
     return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw)
 
 @app.route("/merge_requests")
-
 def mrege_requests():
     options = class_helper()
     gs = gitlab_service()
 
     merge, user_info = gs.run(options)
-    return render_template('merge_requests.html', user_info=user_info)
+    page_status = "Currently Showing requests from the last 2 weeks."
+    return render_template('merge_requests.html', user_info=user_info, page_status=page_status)
 
 
 def parse_string(d):
@@ -78,18 +78,29 @@ def poster():
     merge, user_info = gs.run(options)
 
     start_date = datetime.strptime(start_date, '%d/%m/%Y')
+    if start_date > datetime.now():
+        error_type = "The Start date cannot be in the future."
+        return render_template('error.html', error_message=error_type)
+
     end_date = datetime.strptime(end_date, '%d/%m/%Y')
+    if end_date > datetime.now():
+        error_type = "The end date cannot be in the future."
+        return render_template('error.html', error_message=error_type)
+    if start_date > end_date :
+        error_type = "The end date cannot be before the start date."
+        return render_template('error.html', error_message=error_type)
+
     filtered_merges = []
 
     for x in merge:
-
         merge_date = gs.parse_datetime(x.created_at)
         if start_date <= merge_date <= end_date:
             filtered_merges.append(x)
-    for p in filtered_merges:
-        print(p)
+    start_date = start_date.strftime('%d/%m/%Y')
+    end_date = end_date.strftime('%d/%m/%Y')
+    date_range = "Currently showing requests between " + start_date + " and " + end_date
 
-    return render_template('merge_requests.html', user_info=user_info)
+    return render_template('merge_requests.html', user_info=user_info, page_status=date_range)
 
 if __name__ == "__main__":
   app.run(debug=True,port=2001)
