@@ -75,20 +75,17 @@ def poster():
     end_date = parse_string(request.form['end_date'])
     options.gitlab_stats_start_date = start_date
     options.gitlab_stats_end_date = end_date
+    error = None
     merge, user_info = gs.run(options)
 
     start_date = datetime.strptime(start_date, '%d/%m/%Y')
     if start_date > datetime.now():
-        error_type = "The Start date cannot be in the future."
-        return render_template('error.html', error_message=error_type)
+        error = "The Start date cannot be in the future."
 
     end_date = datetime.strptime(end_date, '%d/%m/%Y')
-    if end_date > datetime.now():
-        error_type = "The end date cannot be in the future."
-        return render_template('error.html', error_message=error_type)
+
     if start_date > end_date :
-        error_type = "The end date cannot be before the start date."
-        return render_template('error.html', error_message=error_type)
+        error = "The end date cannot be before the start date."
 
     filtered_merges = []
 
@@ -98,9 +95,13 @@ def poster():
             filtered_merges.append(x)
     start_date = start_date.strftime('%d/%m/%Y')
     end_date = end_date.strftime('%d/%m/%Y')
-    date_range = "Currently showing requests between " + start_date + " and " + end_date
 
-    return render_template('merge_requests.html', user_info=user_info, page_status=date_range)
+    if len(filtered_merges) == 0:
+        page_status = "No requests were made between " + start_date + " and " + end_date
+    else:
+        page_status = "Currently showing requests between " + start_date + " and " + end_date
+
+    return render_template('merge_requests.html', user_info=user_info, error=error, page_status=page_status)
 
 if __name__ == "__main__":
   app.run(debug=True,port=2001)
