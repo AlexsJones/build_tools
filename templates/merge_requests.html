@@ -1,0 +1,151 @@
+{% include 'partials/header.html' %}
+<script src='/public/js/Chart.bundle.min.js'></script>
+
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div id="calanders" style="margin-top:80px; display: flex; flex: 1">
+        <form  action="/merge_requests" method="POST">
+        <div id="start-date" style="float: left">
+            <h3>Start Date</h3>
+            <input type="date" name="start_date" >
+        </div>
+        <div id="end-date" style="overflow: hidden; margin-left: 10px, margin-top: -100px">
+            <h3>End Date</h3>
+            <input type="date" name="end_date">
+        </div>
+        <div id="filter_button" style="overflow: hidden; position:absolute; left:460px; top:136px">
+            <input type="submit" value="Filter Requests">
+        </div>
+        </form>
+
+    </div>
+
+
+    <div class="page_status">
+        {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+            {% endif %}
+        {{ page_status }}
+    </div>
+
+
+    <table class="table" style="margin-top: 50px;">
+
+          <thead>
+          <tr>
+              <th>User</th>
+              <th>Open Requests</th>
+              <th>Closed Requests</th>
+              <th>WIP Requests</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for key in user_info %}
+
+          <tr>
+
+              <td><p>{{ key }}</p></td> <!-- User name -->
+              <td><p>{{ user_info.get(key).open_requests|length }}</p></td>
+              <td><p>{{ user_info.get(key).closed_requests|length }} </p></td>
+              <td><p>{{ user_info.get(key).wip_requests|length }}</p></td>
+             </tr>
+
+          {% endfor %}
+
+          </tbody>
+
+      </table>
+
+    <div id="open-canvas-holder" style="width:33%; float: left">
+        <label for="open-chart-area">
+            <h3>Open Requests<br /></h3>
+            <canvas id="open-chart-area" />
+        </label>
+    </div>
+
+    <div id="wip-canvas-holder" style="width:33%; float: right">
+        <label for="wip-chart-area">
+            <h3>WIP Requests<br /></h3>
+        <canvas id="wip-chart-area" />
+        </label>
+    </div>
+
+    <div id="closed-canvas-holder" style="width:33%; margin: 0 auto">
+        <label for="closed-chart-area">
+            <h3>Closed Requests<br /></h3>
+        <canvas id="closed-chart-area" />
+        </label>
+    </div>
+        <script>
+
+      var bgcol = [];
+      var bgcol1 = [];
+      var bgcol2 = [];
+      var user = [];
+      var data = [];
+      var data1 = [];
+      var data2 = [];
+      {% for key in user_info %}
+        data.push( {{ user_info.get(key).open_requests|length }} );
+        bgcol.push( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+        bgcol1.push( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+        bgcol2.push( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
+        user.push( "{{ key }}");
+        data1.push( {{ user_info.get(key).closed_requests|length }} );
+        data2.push( {{ user_info.get(key).wip_requests|length }} );
+
+      {% endfor %}
+      var config = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: data,
+                backgroundColor: bgcol,
+                label: 'Dataset 1'
+            }],
+            labels: user
+        },
+        options: {
+            responsive: true
+        }
+    };
+      var config1 = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: data1,
+                backgroundColor: bgcol1,
+                label: 'Dataset 2'
+            }],
+            labels: user
+        },
+        options: {
+            responsive: true
+        }
+    };
+
+      var config2 = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: data2,
+                backgroundColor: bgcol2,
+                label: 'Dataset 3'
+            }],
+            labels: user
+        },
+        options: {
+            responsive: true
+        }
+    };
+
+        window.onload = function() {
+        var ctx = document.getElementById("open-chart-area").getContext("2d");
+        window.myPie = new Chart(ctx, config);
+        var ctx1 = document.getElementById("closed-chart-area").getContext("2d");
+        window.myPie = new Chart(ctx1, config1);
+        var ctx2 = document.getElementById("wip-chart-area").getContext("2d");
+        window.myPie = new Chart(ctx2, config2);
+    };
+    </script>
+</div>
+{% include 'partials/footer.html' %}
