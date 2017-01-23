@@ -17,9 +17,11 @@ app = Flask(__name__, static_folder='public', template_folder=tmpl_dir)
 
 def get_last_wednesday():
     today = date.today()
-    offset = (today.weekday() - 2) % 7
+    offset = (today.weekday() - 2) % 14
     last_wednesday = today - timedelta(days=offset)
     return last_wednesday
+
+
 
 def class_helper():
     class options():
