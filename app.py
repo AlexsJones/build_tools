@@ -15,6 +15,12 @@ from datetime import datetime, timedelta, date
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, static_folder='public', template_folder=tmpl_dir)
 
+def get_last_wednesday():
+    today = date.today()
+    offset = (today.weekday() - 2) % 7
+    last_wednesday = today - timedelta(days=offset)
+    return last_wednesday
+
 def class_helper():
     class options():
         command = "print_stats"
@@ -22,7 +28,7 @@ def class_helper():
         gitlab_token = "QR18DoufKscQAF6HA_BD"
         gitlab_project = "ce-devices-ios/Benji"
         gitlab_max_size = 10
-        gitlab_stats_start_date = (datetime.now()-timedelta(days=14)).strftime("%d/%m/%Y")
+        gitlab_stats_start_date = get_last_wednesday().strftime("%d/%m/%Y")
         gitlab_stats_end_date = datetime.now().strftime("%d/%m/%Y")
     return options
 
@@ -50,7 +56,7 @@ def index():
             tc += 1
 
     to = to - tw
-    return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw)
+    return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw, sprint_start=options.gitlab_stats_start_date)
 
 @app.route("/merge_requests")
 def mrege_requests():
@@ -58,7 +64,8 @@ def mrege_requests():
     gs = gitlab_service()
 
     merge, user_info = gs.run(options)
-    page_status = "Currently Showing requests from the last 2 weeks."
+    print(options.gitlab_stats_start_date)
+    page_status = "Currently showing requests from the current sprint which started on " + options.gitlab_stats_start_date
     return render_template('merge_requests.html', user_info=user_info, page_status=page_status)
 
 
@@ -108,11 +115,6 @@ def poster():
 if __name__ == "__main__":
   app.run(debug=True,port=2001)
 
-def get_last_wednesday():
-    today = date.today()
-    offset = (today.weekday() - 2) % 7
-    last_wednesday = today - timedelta(days=offset)
-    return last_wednesday
 
 
 
