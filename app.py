@@ -96,8 +96,10 @@ def poster():
     start_date = start_date.strftime('%d/%m/%Y')
     end_date = end_date.strftime('%d/%m/%Y')
 
-    if len(filtered_merges) == 0:
+    if len(filtered_merges) == 0 and error is None:
         page_status = "No requests were made between " + start_date + " and " + end_date
+    elif error is not None:
+        page_status = ""
     else:
         page_status = "Currently showing requests between " + start_date + " and " + end_date
 
