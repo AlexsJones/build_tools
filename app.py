@@ -53,7 +53,6 @@ def index():
     return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw)
 
 @app.route("/merge_requests")
-
 def mrege_requests():
     options = class_helper()
     gs = gitlab_service()
@@ -78,16 +77,20 @@ def poster():
     merge, user_info = gs.run(options)
 
     start_date = datetime.strptime(start_date, '%d/%m/%Y')
+    if start_date > datetime.now():
+        error_type = "The Start date cannot be in the future."
+        return render_template('error.html', error_message=error_type)
+
     end_date = datetime.strptime(end_date, '%d/%m/%Y')
+    if end_date > datetime.now():
+        error_type = "The end date cannot be in the future"
+        return render_template('error.html', error_message=error_type)
     filtered_merges = []
 
     for x in merge:
-
         merge_date = gs.parse_datetime(x.created_at)
         if start_date <= merge_date <= end_date:
             filtered_merges.append(x)
-    for p in filtered_merges:
-        print(p)
 
     return render_template('merge_requests.html', user_info=user_info)
 
