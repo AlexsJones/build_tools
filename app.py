@@ -32,12 +32,11 @@ def class_helper():
         gitlab_stats_end_date = datetime.now().strftime("%d/%m/%Y")
     return options
 
+options = class_helper()
+gs = gitlab_service()
+
 @app.route("/")
 def index():
-
-    options = class_helper()
-
-    gs = gitlab_service()
 
     merge, user_info = gs.run(options)
 
@@ -60,8 +59,6 @@ def index():
 
 @app.route("/merge_requests")
 def mrege_requests():
-    options = class_helper()
-    gs = gitlab_service()
 
     merge, user_info = gs.run(options)
     print(options.gitlab_stats_start_date)
@@ -76,8 +73,6 @@ def parse_string(d):
 
 @app.route("/merge_requests", methods=["POST"])
 def poster():
-    options = class_helper()
-    gs = gitlab_service()
     start_date = parse_string(request.form['start_date'])
     end_date = parse_string(request.form['end_date'])
     options.gitlab_stats_start_date = start_date
