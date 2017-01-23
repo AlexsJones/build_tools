@@ -60,7 +60,7 @@ def index():
     return render_template('homepage.html', total_open=to, total_closed=tc, total_wip=tw, sprint_start=options.gitlab_stats_start_date)
 
 @app.route("/merge_requests")
-def mrege_requests():
+def merge_requests():
 
     merge, user_info = gs.run(options)
     print(options.gitlab_stats_start_date)
