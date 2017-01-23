@@ -83,8 +83,12 @@ def poster():
 
     end_date = datetime.strptime(end_date, '%d/%m/%Y')
     if end_date > datetime.now():
-        error_type = "The end date cannot be in the future"
+        error_type = "The end date cannot be in the future."
         return render_template('error.html', error_message=error_type)
+    if start_date > end_date :
+        error_type = "The end date cannot be before the start date."
+        return render_template('error.html', error_message=error_type)
+
     filtered_merges = []
 
     for x in merge:
