@@ -145,6 +145,9 @@
         var ctx2 = document.getElementById("wip-chart-area").getContext("2d");
         window.myPie = new Chart(ctx2, config2);
     };
+        setTimeout(function(){
+        window.location.reload(1);
+        }, 120000);
     </script>
 </div>
 {% include 'partials/footer.html' %}
