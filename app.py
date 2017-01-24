@@ -13,7 +13,7 @@ from build_tools.services.gitlab_service import gitlab_service
 from datetime import datetime, timedelta, date
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-app = Flask(__name__, static_folder='public', template_folder=tmpl_dir)
+app = Flask(__name__, static_folder='bower_components', template_folder=tmpl_dir)
 
 def get_last_wednesday():
     today = date.today()
