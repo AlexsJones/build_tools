@@ -1,5 +1,4 @@
 {% include 'partials/header.html' %}
-<script src='/public/js/Chart.bundle.min.js'></script>
 
 <div class="container" xmlns="http://www.w3.org/1999/html">
     <div id="calanders" style="margin-top:80px; display: flex; flex: 1">
@@ -146,6 +145,9 @@
         var ctx2 = document.getElementById("wip-chart-area").getContext("2d");
         window.myPie = new Chart(ctx2, config2);
     };
+        setTimeout(function(){
+        window.location.reload(1);
+        }, 120000);
     </script>
 </div>
 {% include 'partials/footer.html' %}
