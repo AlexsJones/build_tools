@@ -3,12 +3,14 @@
 #     File Name           :     services/gitlab_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-21 13:59]
-#     Last Modified       :     [2016-12-16 20:01]
+#     Last Modified       :     [2017-01-20 08:46]
 #     Description         :
 #################################################################################
 import gitlab
 from gitlab import GitlabGetError
 import datetime
+from datetime import datetime, timedelta
+
 
 class gitlab_service():
 
@@ -28,22 +30,27 @@ class gitlab_service():
         parser.add_argument("--gitlab_status",
                 help="gitlab build status e.g. failed")
         parser.add_argument("--gitlab_max_size",
-                            help="max size of pagination (branches/merges", default=1500)
+                            help="max size of pagination (branches/merges", default=2000)
+        parser.add_argument("--gitlab_stats_start_date",
+            help="For pruning and stats this overrides the default start date please use DD/M/YYYY")
+        parser.add_argument("--gitlab_stats_end_date",
+            help="For pruning and stats this overrides the default start date please use DD/M/YYYY")
 
     def __init__(self):
         print("Started Gitlab Service...")
 
-    def parse_datetime(d):
+    def parse_datetime(self, d):
         s = d.split('-')
         sub_split = s[2].split('T')
         f = "%s/%s/%s" % (sub_split[0], s[1], s[0][-2:])
         dt = datetime.strptime(f, "%d/%m/%y")
         return dt
 
-    def walk_merge_request(self,project,max_size, comparison_operator=None):
+    def walk_merge_request(self, project, max_size, comparison_operator=None):
         mr = project.mergerequests.list(per_page=max_size)
         for m in mr:
             comparison_operator(m)
+        return mr
 
     def run(self, options):
         print("Running with options %s " % options)
@@ -90,14 +97,14 @@ class gitlab_service():
                     string_id = str(k.id)
                     fails.append(string_id)
             if not fails:
-                print ("No builds were makred as " + options.gitlab_status )
+                print ("No builds were marked as " + options.gitlab_status )
             else:
                 print ("The following Builds were marked as " + options.gitlab_status)
                 url = "https://gitlab.intranet.sky/ce-devices-ios/Benji/builds/"
                 for i in fails:
                     print (url + i)
 
-        if "suggest_prune_branches":
+        if "suggest_prune_branches" in options.command:
             if not options.gitlab_project:
                 print("Requires gitlab project e.g. myname/project")
                 exit(0)
@@ -110,8 +117,8 @@ class gitlab_service():
                 if merge.state == 'merged':
                     branches.add(merge.source_branch)
             p = gl.projects.get(options.gitlab_project)
-            self.walk_merge_request(p,options.gitlab_max_size, comparison)
-            self.walk_merge_request(p, options.gitlab_max_size, comparison)
+            merge_list = self.walk_merge_request(p, options.gitlab_max_size, comparison)
+
             for b in branches:
                 try:
                     branch = p.branches.get(b)
@@ -119,13 +126,77 @@ class gitlab_service():
                 except GitlabGetError:
                     pass
 
-        if "print_stats":
+            return merge_list
+
+        if "print_stats" in options.command:
             if not options.gitlab_project:
                 print("Requires gitlab project e.g. myname/project")
                 exit(0)
 
+            class UserInfo:
+                def __init__(self, name):
+                    self.name = name
+                    self.closed_requests = []
+                    self.open_requests = []
+                    self.wip_requests = []
+
+            user_info = dict()
+
+            if options.gitlab_stats_start_date and options.gitlab_stats_end_date:
+                stime = datetime.strptime(options.gitlab_stats_start_date,"%d/%m/%Y")
+                etime = datetime.strptime(options.gitlab_stats_end_date,"%d/%m/%Y")
+            else:
+                print("Requires time range")
+                exit(0)
+
             def comparison_operator(merge):
-                pass
+                datetime_object = self.parse_datetime(merge.created_at)
+                if datetime_object < stime:
+                    return
+                if datetime_object > etime:
+                    return
+
+                if merge.author.name not in user_info:
+                    user_info[merge.author.name] = UserInfo(merge.author.name)
+
+                if "WIP" in merge.title:
+                    user_info[merge.author.name].wip_requests.append(merge)
+                    return
+
+                if not merge.state:
+                    return
+                if merge.state == 'opened':
+
+                        user_info[merge.author.name].open_requests.append(merge)
+
+                if merge.state == 'closed':
+                        user_info[merge.author.name].closed_requests.append(merge)
 
             p = gl.projects.get(options.gitlab_project)
-            self.walk_merge_request(p, options.gitlab_max_size,comparison_operator)
+            merge_list = self.walk_merge_request(p, options.gitlab_max_size, comparison_operator)
+
+            to = 0
+            tc = 0
+            tw = 0
+            print("---------------------------------------------------------------------------")
+            for u in user_info:
+                user = user_info[u]
+                print("User %s has %d open request(s), %d closed request(s) and %d wip request(s)"
+                      % (user.name, len(user.open_requests), len(user.closed_requests), len(user.wip_requests)))
+
+                if len(user.open_requests) > 0:
+                    for m in user.open_requests:
+                        print("---OPEN-->%s" % m.title)
+                        to += 1
+
+                if len(user.closed_requests) > 0:
+                    for m in user.closed_requests:
+                        print("---CLOSED-->%s" % m.title)
+                        tc += 1
+                if len(user.wip_requests) > 0:
+                    for m in user.wip_requests:
+                        print("---WIP-->%s" % m.title)
+                        tw += 1
+            print("----------------------------------------------------------------------------")
+            print("Total open requests %d, closed requests %d, wip requests %d" % (to, tc, tw))
+            return merge_list, user_info

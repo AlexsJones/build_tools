@@ -3,7 +3,7 @@
 #     File Name           :     build_service.py
 #     Created By          :     AlexsJones
 #     Creation Date       :     [2016-09-19 11:31]
-#     Last Modified       :     [2016-11-15 10:26]
+#     Last Modified       :     [2017-01-17 10:05]
 #     Description         :
 #################################################################################
 import os
@@ -11,7 +11,11 @@ import sys
 import inspect
 import argparse
 import inspect
-# Configuration
+from colorama import init
+init(strip=not sys.stdout.isatty()) # strip colors if stdout is redirected
+from termcolor import cprint 
+from pyfiglet import figlet_format
+
 SERVICES_PATH="services"
 # ------------------------
 # Services must follow the following format
@@ -27,8 +31,6 @@ SERVICES_PATH="services"
 #   def run(self):
 #       print("Running with %s, args.command)
 # -----------------------
-
-
 def load_modules(parser):
     res = {}
 
@@ -67,6 +69,9 @@ def load_modules(parser):
     return res
 
 if __name__ == "__main__":
+
+    cprint(figlet_format('build tools', font='starwars'),
+                   'yellow', attrs=['bold'])
 
     parser = argparse.ArgumentParser()
     print("Loading Modules...")
