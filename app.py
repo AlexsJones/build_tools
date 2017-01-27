@@ -18,7 +18,7 @@ app = Flask(__name__, static_folder='bower_components', template_folder=tmpl_dir
 def get_first_day():
     today = datetime.today()
     if today.day > 25:
-        today += datetime.timedelta(7)
+        today += timedelta(7)
     first_day = today.replace(day=1)
     print("Start Date")
     print(first_day)
@@ -113,11 +113,3 @@ def poster():
 
 if __name__ == "__main__":
   app.run(debug=True,port=2001)
-
-
-
-
-
-
-
-
