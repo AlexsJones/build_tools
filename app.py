@@ -15,13 +15,13 @@ from datetime import datetime, timedelta, date
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, static_folder='bower_components', template_folder=tmpl_dir)
 
-def get_last_wednesday():
-    today = date.today()
-    offset = (today.weekday() - 2) % 14
-    last_wednesday = today - timedelta(days=offset)
-    return last_wednesday
-
-
+def get_first_day():
+    today = datetime.today()
+    today = today.strftime('%d/%m/%Y')
+    today = today[2:]
+    first_day_s = "01" + today
+    first_day = datetime.strptime(first_day_s, "%d/%m/%Y")
+    return first_day
 
 def class_helper():
     class options():
@@ -29,8 +29,8 @@ def class_helper():
         gitlab_server = "http://gitlab.intranet.sky"
         gitlab_token = "QR18DoufKscQAF6HA_BD"
         gitlab_project = "ce-devices-ios/Benji"
-        gitlab_max_size = 10
-        gitlab_stats_start_date = get_last_wednesday().strftime("%d/%m/%Y")
+        gitlab_max_size = 2000
+        gitlab_stats_start_date = get_first_day().strftime("%d/%m/%Y")
         gitlab_stats_end_date = datetime.now().strftime("%d/%m/%Y")
     return options
 
@@ -111,11 +111,3 @@ def poster():
 
 if __name__ == "__main__":
   app.run(debug=True,port=2001)
-
-
-
-
-
-
-
-
