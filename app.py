@@ -17,13 +17,11 @@ app = Flask(__name__, static_folder='bower_components', template_folder=tmpl_dir
 
 def get_first_day():
     today = datetime.today()
-    if today.day > 25:
-        today += datetime.timedelta(7)
-    first_day = today.replace(day=1)
-    print("Start Date")
-    print(first_day)
+    today = today.strftime('%d/%m/%Y')
+    today = today[2:]
+    first_day_s = "01" + today
+    first_day = datetime.strptime(first_day_s, "%d/%m/%Y")
     return first_day
-
 
 def class_helper():
     class options():
@@ -113,11 +111,3 @@ def poster():
 
 if __name__ == "__main__":
   app.run(debug=True,port=2001)
-
-
-
-
-
-
-
-
