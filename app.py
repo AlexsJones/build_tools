@@ -11,9 +11,11 @@ from flask import Flask, Response,render_template, request
 import os
 from build_tools.services.gitlab_service import gitlab_service
 from datetime import datetime, timedelta, date
+from flask_socketio import SocketIO
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, static_folder='bower_components', template_folder=tmpl_dir)
+socketio = SocketIO(app)
 
 def get_first_day():
     today = datetime.today()
@@ -110,4 +112,4 @@ def poster():
     return render_template('merge_requests.html', user_info=user_info, error=error, page_status=page_status)
 
 if __name__ == "__main__":
-  app.run(debug=True,port=2001)
+  socketio.run(app)
