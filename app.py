@@ -9,6 +9,7 @@
 
 from flask import Flask, Response, render_template, request
 from flask_socketio import SocketIO
+
 from src.socket_homepage_bindings import HomePageSocketNameSpace
 from src.socket_merge_request_bindings import MergeRequestSocketNameSpace
 from build_tools.services.gitlab_service import gitlab_service
