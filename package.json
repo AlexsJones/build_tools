@@ -1,0 +1,23 @@
+{
+  "name": "ce-devops-stats",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "bower": "^1.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sky-uk/ce-devops-stats.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sky-uk/ce-devops-stats/issues"
+  },
+  "homepage": "https://github.com/sky-uk/ce-devops-stats#readme"
+}
