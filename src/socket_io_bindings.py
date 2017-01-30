@@ -42,5 +42,18 @@ class SocketNameSpace(Namespace):
              {'total_open': to, 'total_closed': tc, 'total_wip': tw})
 
     @staticmethod
+    def fill_table(self, message):
+        session['receive_count'] = session.get('receive_count', 0) + 1
+
+        # start_date = parse_string(request.form['start_date'])
+        # end_date = parse_string(request.form['end_date'])
+        # options.gitlab_stats_start_date = start_date
+        # options.gitlab_stats_end_date = end_date
+        # error = None
+        # merge, user_info = self.gs.run(options)
+
+
+
+    @staticmethod
     def on_disconnect():
         print('Client disconnected', request.sid)

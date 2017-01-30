@@ -1,6 +1,20 @@
 
 {% include 'partials/header.html' %}
 
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+
+            namespace = '/merge_requests';
+            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
+            socket.on('connect', function() {
+                socket.emit('requesting_updates', {data: 'I\'m connected!'});
+            });
+
+        });
+    </script>
+
 <div class="container" xmlns="http://www.w3.org/1999/html">
     <div id="calanders" style="margin-top:80px; display: flex; flex: 1">
         <form  action="/merge_requests" method="POST">
