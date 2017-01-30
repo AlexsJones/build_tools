@@ -26,6 +26,10 @@ def index():
 
     return render_template("homepage.html")
 
+@app.route("/merge_requests")
+def merge_requests():
+    return render_template("merge_requests.html")
+
 #
 # @app.route("/merge_requests")
 # def merge_requests():
