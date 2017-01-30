@@ -19,8 +19,6 @@ async_mode = None
 socketio = SocketIO(app, async_mode=async_mode)
 
 
-
-
 @app.route("/")
 def index():
 
@@ -84,7 +82,7 @@ def parse_string(d):
 
 if __name__ == "__main__":
 
-    ns = SocketNameSpace('/test')
+    ns = SocketNameSpace('/home')
     ns.set_socket(socketio)
     socketio.on_namespace(ns)
 
