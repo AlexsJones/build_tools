@@ -6,11 +6,11 @@ thread = None
 socket_global_ref = None
 
 
-class SocketNameSpace(Namespace):
+class HomePageSocketNameSpace(Namespace):
 
-    def __init__(self, namespace=None):
+    def __init__(self, service, namespace=None):
         super(Namespace, self).__init__(namespace)
-        self.gs = gitlab_service()
+        self.gs = service
         self.is_fetching=False
 
     @staticmethod
@@ -44,6 +44,8 @@ class SocketNameSpace(Namespace):
     @staticmethod
     def fill_table(self, message):
         session['receive_count'] = session.get('receive_count', 0) + 1
+
+
 
         # start_date = parse_string(request.form['start_date'])
         # end_date = parse_string(request.form['end_date'])
