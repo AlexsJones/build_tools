@@ -12,6 +12,12 @@
                 socket.emit('requesting_updates', {data: 'I\'m connected!'});
             });
 
+            socket.on('filter_requests', function() {
+                $("#uname").text(msg['key']);
+                $("#uor").text(msg['user_info.get(key).open_requests|length']);
+                $("#uoc").text(msg['user_info.get(key).closed_requests|length']);
+                $("#uow").text(msg['user_info.get(key).wip_requests|length']);
+
         });
     </script>
 
@@ -57,10 +63,10 @@
 
           <tr>
 
-              <td><p>{{ key }}</p></td> <!-- User name -->
-              <td><p>{{ user_info.get(key).open_requests|length }}</p></td>
-              <td><p>{{ user_info.get(key).closed_requests|length }} </p></td>
-              <td><p>{{ user_info.get(key).wip_requests|length }}</p></td>
+              <td id="uname"><p>{{ key }}</p></td> <!-- User name -->
+              <td id="uor"><p>{{ user_info.get(key).open_requests|length }}</p></td>
+              <td id="uoc"><p>{{ user_info.get(key).closed_requests|length }} </p></td>
+              <td id="uow"><p>{{ user_info.get(key).wip_requests|length }}</p></td>
              </tr>
 
           {% endfor %}
