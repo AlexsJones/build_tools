@@ -66,8 +66,6 @@ class MergeRequestSocketNameSpace(Namespace):
 
         emit('table', {'table':encoded_data})
 
-
-
         @staticmethod
         def on_disconnect():
             print('Client disconnected', request.sid)

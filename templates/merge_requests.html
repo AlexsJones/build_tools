@@ -67,15 +67,15 @@
               <th>WIP Requests</th>
           </tr>
           </thead>
-          <tbody id="table">
+          <tbody>
           {% for key in user_info %}
 
           <tr>
 
-              <td><p>{{ key }}</p></td> <!-- User name -->
-              <td><p>{{ user_info.get(key).open_requests|length }}</p></td>
-              <td><p>{{ user_info.get(key).closed_requests|length }} </p></td>
-              <td><p>{{ user_info.get(key).wip_requests|length }}</p></td>
+              <td><p id="name">{{ key }}</p></td> <!-- User name -->
+              <td><p id="or">{{ user_info.get(key).open_requests|length }}</p></td>
+              <td><p id="cr">{{ user_info.get(key).closed_requests|length }} </p></td>
+              <td><p id="wr">{{ user_info.get(key).wip_requests|length }}</p></td>
              </tr>
 
           {% endfor %}
