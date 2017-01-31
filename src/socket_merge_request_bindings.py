@@ -1,12 +1,14 @@
 from flask_socketio import Namespace, emit
 from flask import session, request, render_template
-from build_tools.services.gitlab_service import gitlab_service
 from datetime import datetime
 from src.options import options
-from src.utils import parse_string
-
+from src.utils import parse_string, toJson
+import numpy as np
+import json
+import jsonpickle
 thread = None
 socket_global_ref = None
+import json
 
 
 class MergeRequestSocketNameSpace(Namespace):
@@ -59,6 +61,10 @@ class MergeRequestSocketNameSpace(Namespace):
         else:
             page_status = "Currently showing requests between " + start_date + " and " + end_date
             emit('page_status', {'page_status': page_status})
+
+        encoded_data = jsonpickle.encode(user_info)
+
+        emit('table', {'table':encoded_data})
 
 
 
