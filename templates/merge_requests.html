@@ -6,11 +6,11 @@
         <!--<form id="date_input" action="/merge_requests" method="POST">-->
         <div id="start-date" style="float: left">
             <h3>Start Date</h3>
-            <input type="date" name="start_date" >
+            <input type="date" id="sdate" name="start_date" >
         </div>
         <div id="end-date" style="overflow: hidden; margin-left: 10px, margin-top: -100px">
             <h3>End Date</h3>
-            <input type="date" name="end_date">
+            <input type="date" id="edate" name="end_date">
         </div>
         <div id="filter_button" style="overflow: hidden; position:absolute; left:460px; top:136px">
             <input type="button" value="Filter Requests">
@@ -31,7 +31,7 @@
             });
 
             $("#filter_button").click( function() {
-                socket.emit('requesting_updates', {data: 'I\'m connected!'});
+                socket.emit('requesting_updates', { start_date: $( '#sdate').val(), end_date: $('#edate').val() } );
             });
 
             $("#ps").text(msg['page_status']);

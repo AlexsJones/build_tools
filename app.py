@@ -13,6 +13,7 @@ from flask_socketio import SocketIO
 from src.socket_homepage_bindings import HomePageSocketNameSpace
 from src.socket_merge_request_bindings import MergeRequestSocketNameSpace
 from build_tools.services.gitlab_service import gitlab_service
+from src.utils import parse_string
 import os
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -39,11 +40,6 @@ def merge_requests():
 #     page_status = "Currently showing requests from the current sprint which started on " + options.gitlab_stats_start_date
 #     return render_template('merge_requests.html', user_info=user_info, page_status=page_status)
 #
-
-def parse_string(d):
-    s = d.split('-')
-    f = "%s/%s/%s" % (s[2], s[1], s[0])
-    return f
 
 #
 # @app.route("/merge_requests", methods=["POST"])
