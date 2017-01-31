@@ -63,9 +63,10 @@ class MergeRequestSocketNameSpace(Namespace):
             emit('page_status', {'page_status': page_status})
 
         encoded_data = jsonpickle.encode(user_info)
-        a = json.loads(encoded_data)
-        print(a)
-        emit('table', {'table':a})
+
+        emit('table', {'table':encoded_data})
+
+
 
         @staticmethod
         def on_disconnect():
