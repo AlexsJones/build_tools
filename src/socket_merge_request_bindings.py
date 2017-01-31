@@ -32,11 +32,16 @@ class MergeRequestSocketNameSpace(Namespace):
         start_date = datetime.strptime(start_date, '%d/%m/%Y')
         if start_date > datetime.now():
             error = "The Start date cannot be in the future."
+            emit('error_raised',
+                 {'error': error})
+
 
         end_date = datetime.strptime(end_date, '%d/%m/%Y')
 
         if start_date > end_date:
             error = "The end date cannot be before the start date."
+            emit('error_raised',
+                 {'error': error})
 
         print(error)
 

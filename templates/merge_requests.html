@@ -34,18 +34,19 @@
                 socket.emit('requesting_updates', { start_date: $( '#sdate').val(), end_date: $('#edate').val() } );
             });
 
-            $("#ps").text(msg['page_status']);
+            socket.on('error_raised', function(msg) {
+                $("#ps").text(msg['error']);
+            });
         });
 
     </script>
 
 
     <div class="page_status">
-        {% if error %}
-        <p id="ps" class=error><strong>Error:</strong> {{ error }}
-            {% endif %}
-        {{ page_status }}
+        <p id="ps" class=error><strong>{{ error }}</strong></p>
     </div>
+
+            {{ page_status }}
 
 
     <table class="table" style="margin-top: 50px;">
