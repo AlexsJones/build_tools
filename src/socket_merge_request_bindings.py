@@ -5,6 +5,7 @@ from src.options import options
 from src.utils import parse_string, toJson
 import numpy as np
 import json
+import jsonpickle
 thread = None
 socket_global_ref = None
 import json
@@ -61,26 +62,11 @@ class MergeRequestSocketNameSpace(Namespace):
             page_status = "Currently showing requests between " + start_date + " and " + end_date
             emit('page_status', {'page_status': page_status})
 
-
-
-        import jsonpickle
-
         encoded_data = jsonpickle.encode(user_info)
 
-        print(encoded_data)
-        # from json import dumps, loads, JSONEncoder, JSONDecoder
-        # import pickle
-        # class PythonObjectEncoder(JSONEncoder):
-        #     def default(self, obj):
-        #         if isinstance(obj, (list, dict, str, unicode, int, float, bool, type(None))):
-        #             return JSONEncoder.default(self, obj)
-        #         return {'_python_object': pickle.dumps(obj)}
-        #
-        #
-        #
-        # r = json.dumps(user_info,cls=PythonObjectEncoder)
+        emit('table', {'table':encoded_data})
 
-        print(r)
+
 
         @staticmethod
         def on_disconnect():
