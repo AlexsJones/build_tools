@@ -37,6 +37,10 @@
             socket.on('error_raised', function(msg) {
                 $("#ps").text(msg['error']);
             });
+
+            socket.on('page_status', function(msg) {
+                $("#psm").text(msg['page_status']);
+            });
         });
 
     </script>
@@ -46,7 +50,7 @@
         <p id="ps" class=error><strong>{{ error }}</strong></p>
     </div>
 
-            {{ page_status }}
+    <div id="psm">{{ page_status }}</div>
 
 
     <table class="table" style="margin-top: 50px;">
