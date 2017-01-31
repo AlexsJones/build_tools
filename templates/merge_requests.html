@@ -41,6 +41,10 @@
             socket.on('page_status', function(msg) {
                 $("#psm").text(msg['page_status']);
             });
+
+            socket.on('table', function(msg) {
+                $("#table").text(msg['user_info']);
+            });
         });
 
     </script>
@@ -63,15 +67,15 @@
               <th>WIP Requests</th>
           </tr>
           </thead>
-          <tbody>
+          <tbody id="table">
           {% for key in user_info %}
 
           <tr>
 
-              <td id="uname"><p>{{ key }}</p></td> <!-- User name -->
-              <td id="uor"><p>{{ user_info.get(key).open_requests|length }}</p></td>
-              <td id="uoc"><p>{{ user_info.get(key).closed_requests|length }} </p></td>
-              <td id="uow"><p>{{ user_info.get(key).wip_requests|length }}</p></td>
+              <td><p>{{ key }}</p></td> <!-- User name -->
+              <td><p>{{ user_info.get(key).open_requests|length }}</p></td>
+              <td><p>{{ user_info.get(key).closed_requests|length }} </p></td>
+              <td><p>{{ user_info.get(key).wip_requests|length }}</p></td>
              </tr>
 
           {% endfor %}
