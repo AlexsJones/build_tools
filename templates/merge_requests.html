@@ -21,32 +21,66 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
+    $(document).ready(function() {
 
-            namespace = '/merge_requests';
-            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+      namespace = '/merge_requests';
+      var socket = io.connect(location.protocol + '//' + document.domain + ':' +
+        location.port + namespace);
 
-            socket.on('filter_requests', function() {
-                alert('It worksf');
-            });
+      socket.on('filter_requests', function() {
+        alert('It worksf');
+      });
 
-            $("#filter_button").click( function() {
-                socket.emit('requesting_updates', { start_date: $( '#sdate').val(), end_date: $('#edate').val() } );
-            });
-
-            socket.on('error_raised', function(msg) {
-                $("#ps").text(msg['error']);
-            });
-
-            socket.on('page_status', function(msg) {
-                $("#psm").text(msg['page_status']);
-            });
-
-            socket.on('table', function(msg) {
-                
-                <!--Add JSON to table Functions-->
-            });
+      $("#filter_button").click(function() {
+        socket.emit('requesting_updates', {
+          start_date: $('#sdate').val(),
+          end_date: $('#edate').val()
         });
+      });
+
+      socket.on('error_raised', function(msg) {
+        $("#ps").text(msg['error']);
+      });
+
+      socket.on('page_status', function(msg) {
+        $("#psm").text(msg['page_status']);
+      });
+
+      socket.on('table', function(msg) {
+          var myList = msg
+
+          function buildHtmlTable(selector) {
+            var columns = addAllColumnHeaders(myList, selector);
+            for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+              var cellValue = myList[i][columns[colIndex]];
+              if (cellValue == null) cellValue = "";
+              row$.append($('<td/>').html(cellValue));
+            }
+            $(selector).append(row$);
+          }
+        }
+
+        function addAllColumnHeaders(myList, selector) {
+          var columnSet = [];
+          var headerTr$ = $('<tr/>');
+
+          for (var i = 0; i < myList.length; i++) {
+            var rowHash = myList[i];
+            for (var key in rowHash) {
+              if ($.inArray(key, columnSet) == -1) {
+                columnSet.push(key);
+                headerTr$.append($('<th/>').html(key));
+              }
+            }
+          }
+          $(selector).append(headerTr$);
+
+          return columnSet;
+        }
+
+      });
+    });
+
 
     </script>
 
@@ -69,17 +103,7 @@
           </tr>
           </thead>
           <tbody id="a">
-          {% for key in user_info %}
 
-          <tr>
-
-              <td><p id="name">{{ key }}</p></td> <!-- User name -->
-              <td><p id="or">{{ user_info.get(key).open_requests|length }}</p></td>
-              <td><p id="cr">{{ user_info.get(key).closed_requests|length }} </p></td>
-              <td><p id="wr">{{ user_info.get(key).wip_requests|length }}</p></td>
-             </tr>
-
-          {% endfor %}
 
           </tbody>
 
