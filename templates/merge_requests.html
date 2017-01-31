@@ -43,7 +43,8 @@
             });
 
             socket.on('table', function(msg) {
-                $("#table").text(msg['table']);
+                
+                <!--Add JSON to table Functions-->
             });
         });
 
@@ -67,7 +68,7 @@
               <th>WIP Requests</th>
           </tr>
           </thead>
-          <tbody>
+          <tbody id="a">
           {% for key in user_info %}
 
           <tr>
