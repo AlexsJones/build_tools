@@ -24,21 +24,22 @@ class MergeRequestSocketNameSpace(Namespace):
         start_date = parse_string(message['start_date'])
         end_date = parse_string(message['end_date'])
         print(start_date, end_date)
-        # options.gitlab_stats_start_date = start_date
-        # options.gitlab_stats_end_date = end_date
-        # error = None
-        # merge, user_info = gs.run(options)
-        #
-        # start_date = datetime.strptime(start_date, '%d/%m/%Y')
-        # if start_date > datetime.now():
-        #     error = "The Start date cannot be in the future."
-        #
-        #
-        # end_date = datetime.strptime(end_date, '%d/%m/%Y')
-        #
-        # if start_date > end_date:
-        #     error = "The end date cannot be before the start date."
-        #
+        options.gitlab_stats_start_date = start_date
+        options.gitlab_stats_end_date = end_date
+        error = None
+        merge, user_info = self.gs.run(options)
+
+        start_date = datetime.strptime(start_date, '%d/%m/%Y')
+        if start_date > datetime.now():
+            error = "The Start date cannot be in the future."
+
+        end_date = datetime.strptime(end_date, '%d/%m/%Y')
+
+        if start_date > end_date:
+            error = "The end date cannot be before the start date."
+
+        print(error)
+
         # filtered_merges = []
         #
         # for x in merge:
