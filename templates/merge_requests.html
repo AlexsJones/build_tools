@@ -74,7 +74,10 @@
                     $("#filter_button").click(function() {
                         var tb = document.getElementById('table');
                         while(tb.rows.length > 0) {
-                        tb.deleteRow(1);
+                        tb.deleteRow(0);
+                        var ctx = null;
+                        var ctx1 = null;
+                        var ctx2 = null;
                         }
 
                         socket.emit('requesting_updates', {
