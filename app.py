@@ -9,22 +9,28 @@
 
 from flask import Flask, Response, render_template, request
 from flask_socketio import SocketIO
-from src.socket_io_bindings import SocketNameSpace
+
+from src.socket_homepage_bindings import HomePageSocketNameSpace
+from src.socket_merge_request_bindings import MergeRequestSocketNameSpace
+from build_tools.services.gitlab_service import gitlab_service
+from src.utils import parse_string
 import os
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, static_folder='bower_components', template_folder=tmpl_dir)
 app.config['SECRET_KEY'] = 'test_key'
-async_mode = None
+async_mode = 'threading'
 socketio = SocketIO(app, async_mode=async_mode)
-
-
 
 
 @app.route("/")
 def index():
 
     return render_template("homepage.html")
+
+@app.route("/merge_requests")
+def merge_requests():
+    return render_template("merge_requests.html")
 
 #
 # @app.route("/merge_requests")
@@ -34,11 +40,6 @@ def index():
 #     page_status = "Currently showing requests from the current sprint which started on " + options.gitlab_stats_start_date
 #     return render_template('merge_requests.html', user_info=user_info, page_status=page_status)
 #
-
-def parse_string(d):
-    s = d.split('-')
-    f = "%s/%s/%s" % (s[2], s[1], s[0])
-    return f
 
 #
 # @app.route("/merge_requests", methods=["POST"])
@@ -80,9 +81,15 @@ def parse_string(d):
 
 if __name__ == "__main__":
 
-    ns = SocketNameSpace('/test')
-    ns.set_socket(socketio)
-    socketio.on_namespace(ns)
+    gs = gitlab_service()
+
+    home_name_space = HomePageSocketNameSpace(gs, '/home')
+    home_name_space.set_socket(socketio)
+    socketio.on_namespace(home_name_space)
+
+    merge_name_space = MergeRequestSocketNameSpace(gs, '/merge_requests')
+    merge_name_space.set_socket(socketio)
+    socketio.on_namespace(merge_name_space)
 
     socketio.run(app, debug=True, port=2001)
 
