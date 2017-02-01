@@ -9,6 +9,7 @@ import jsonpickle
 thread = None
 socket_global_ref = None
 import json
+import _thread
 
 
 class MergeRequestSocketNameSpace(Namespace):
@@ -22,12 +23,13 @@ class MergeRequestSocketNameSpace(Namespace):
         global socket_global_ref
         socket_global_ref = s
 
-    def on_requesting_updates(self, message):
-        start_date = parse_string(message['start_date'])
-        end_date = parse_string(message['end_date'])
-        options.gitlab_stats_start_date = start_date
-        options.gitlab_stats_end_date = end_date
+    def threaded_fetch_updates_worker(self, params):
+
+
         error = None
+        start_date = params.gitlab_stats_start_date
+        end_date = params.gitlab_stats_start_date
+
         merge, user_info = self.gs.run(options)
 
         start_date = datetime.strptime(start_date, '%d/%m/%Y')
@@ -64,9 +66,17 @@ class MergeRequestSocketNameSpace(Namespace):
 
         encoded_data = jsonpickle.encode(user_info)
 
-        emit('table', {'table':encoded_data})
+        emit('table', encoded_data)
 
+    def on_requesting_updates(self, message):
 
+        start_date = parse_string(message['start_date'])
+        end_date = parse_string(message['end_date'])
+        options.gitlab_stats_start_date = start_date
+        options.gitlab_stats_end_date = end_date
+
+        # Needs to be threaded out
+        self.threaded_fetch_updates_worker(options)
 
         @staticmethod
         def on_disconnect():
