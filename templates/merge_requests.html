@@ -19,44 +19,6 @@
     </div>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
-            namespace = '/merge_requests';
-            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
-            socket.on('filter_requests', function() {
-                alert('It worksf');
-            });
-            $("#filter_button").click( function() {
-                socket.emit('requesting_updates', { start_date: $( '#sdate').val(), end_date: $('#edate').val() } );
-            });
-            socket.on('error_raised', function(msg) {
-                $("#ps").text(msg['error']);
-            });
-            socket.on('page_status', function(msg) {
-                $("#psm").text(msg['page_status']);
-            });
-            socket.on('table', function(msg) {
-
-             var parsed = JSON.parse(msg);
-
-             for (var key in parsed) {
-
-                //console.log(key);
-
-                var username = parsed[key]['name'];
-                var open_requests = parsed[key]['open_requests'].length;
-                var closed_requests = parsed[key]['closed_requests'].length;
-                var wip_requests = parsed[key]['wip_requests'].length;
-                var table_row = "".concat(username , " " , open_requests , " " , closed_requests , " " , wip_requests);
-                console.log(table_row)
-
-               // $("#stats").append("<tr><td></td>" + parsed[key].name + "td></td>td></td>td></td></tr>");
-            }
-
-            });
-        });
-
-    </script>
 
 
     <div class="page_status">
@@ -69,31 +31,18 @@
     <table id="stats" class="table" style="margin-top: 50px;">
 
         <thead>
-        <tr>
-            <th>User</th>
-            <th>Open Requests</th>
-            <th>Closed Requests</th>
-            <th>WIP Requests</th>
-        </tr>
+            <tr>
+                <th>User</th>
+                <th>Open Requests</th>
+                <th>Closed Requests</th>
+                <th>WIP Requests</th>
+            </tr>
         </thead>
         <tbody id="table">
-        {% for key in user_info %}
-
-        <tr>
-
-            <td><p>{{ key }}</p></td> <!-- User name -->
-            <td><p>{{ user_info.get(key).open_requests|length }}</p></td>
-            <td><p>{{ user_info.get(key).closed_requests|length }} </p></td>
-            <td><p>{{ user_info.get(key).wip_requests|length }}</p></td>
-        </tr>
-
-        {% endfor %}
 
         </tbody>
 
     </table>
-    .
-
 
     <div id="open-canvas-holder" style="width:33%; float: left">
         <label for="open-chart-area">
@@ -115,77 +64,107 @@
             <canvas id="closed-chart-area"/>
         </label>
     </div>
-    <script>
-      var bgcol = [];
-      var bgcol1 = [];
-      var bgcol2 = [];
-      var user = [];
-      var data = [];
-      var data1 = [];
-      var data2 = [];
-      {% for key in user_info %}
-        data.push( {{ user_info.get(key).open_requests|length }} );
-        bgcol.push( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
-        bgcol1.push( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
-        bgcol2.push( '#'+(Math.random()*0xFFFFFF<<0).toString(16) );
-        user.push( "{{ key }}");
-        data1.push( {{ user_info.get(key).closed_requests|length }} );
-        data2.push( {{ user_info.get(key).wip_requests|length }} );
-      {% endfor %}
-      var config = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: data,
-                backgroundColor: bgcol,
-                label: 'Dataset 1'
-            }],
-            labels: user
-        },
-        options: {
-            responsive: true
-        }
-    };
-      var config1 = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: data1,
-                backgroundColor: bgcol1,
-                label: 'Dataset 2'
-            }],
-            labels: user
-        },
-        options: {
-            responsive: true
-        }
-    };
-      var config2 = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: data2,
-                backgroundColor: bgcol2,
-                label: 'Dataset 3'
-            }],
-            labels: user
-        },
-        options: {
-            responsive: true
-        }
-    };
-        window.onload = function() {
-        var ctx = document.getElementById("open-chart-area").getContext("2d");
-        window.myPie = new Chart(ctx, config);
-        var ctx1 = document.getElementById("closed-chart-area").getContext("2d");
-        window.myPie = new Chart(ctx1, config1);
-        var ctx2 = document.getElementById("wip-chart-area").getContext("2d");
-        window.myPie = new Chart(ctx2, config2);
-    };
-        setTimeout(function(){
-        window.location.reload(1);
-        }, 120000);
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+                    namespace = '/merge_requests';
+                    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+                    socket.on('filter_requests', function() {
+                        alert('It worksf');
+                    });
+                    $("#filter_button").click(function() {
+                        socket.emit('requesting_updates', {
+                            start_date: $('#sdate').val(),
+                            end_date: $('#edate').val()
+                        });
+                    });
+                    socket.on('error_raised', function(msg) {
+                        $("#ps").text(msg['error']);
+                    });
+                    socket.on('page_status', function(msg) {
+                        $("#psm").text(msg['page_status']);
+                    });
+                    socket.on('table', function(msg) {
+                                var bgcol = [];
+                                var bgcol1 = [];
+                                var bgcol2 = [];
+                                var user = [];
+                                var data = [];
+                                var data1 = [];
+                                var data2 = [];
+                                var parsed = JSON.parse(msg);
 
+                                for (var key in parsed) {
+
+                                    var username = parsed[key]['name'];
+                                    var open_requests = parsed[key]['open_requests'].length;
+                                    var closed_requests = parsed[key]['closed_requests'].length;
+                                    var wip_requests = parsed[key]['wip_requests'].length;
+                                    var table_row = "".concat("<tr><td>", username, "</td><td>", open_requests, "</td><td>", closed_requests, "</td><td>", wip_requests, "</td></tr>");
+                                    $("#stats").append(table_row);
+
+                                    //Generate charts
+
+                                    data.push(open_requests);
+                                    bgcol.push('#' + (Math.random() * 0xFFFFFF << 0).toString(16));
+                                    bgcol1.push('#' + (Math.random() * 0xFFFFFF << 0).toString(16));
+                                    bgcol2.push('#' + (Math.random() * 0xFFFFFF << 0).toString(16));
+                                    user.push(username);
+                                    data1.push(closed_requests);
+                                    data2.push(wip_requests);
+
+                                  };
+
+                                    var config = {
+                                        type: 'pie',
+                                        data: {
+                                            datasets: [{
+                                                data: data,
+                                                backgroundColor: bgcol,
+                                                label: 'Dataset 1'
+                                            }],
+                                            labels: user
+                                        },
+                                        options: {
+                                            responsive: true
+                                        }
+                                    };
+                                    var config1 = {
+                                        type: 'pie',
+                                        data: {
+                                            datasets: [{
+                                                data: data1,
+                                                backgroundColor: bgcol1,
+                                                label: 'Dataset 2'
+                                            }],
+                                            labels: user
+                                        },
+                                        options: {
+                                            responsive: true
+                                        }
+                                    };
+                                    var config2 = {
+                                        type: 'pie',
+                                        data: {
+                                            datasets: [{
+                                                data: data2,
+                                                backgroundColor: bgcol2,
+                                                label: 'Dataset 3'
+                                            }],
+                                            labels: user
+                                        },
+                                        options: {
+                                            responsive: true
+                                        }
+                                    };
+
+                                    var ctx = document.getElementById("open-chart-area").getContext("2d");
+                                    window.myPie = new Chart(ctx, config);
+                                    var ctx1 = document.getElementById("closed-chart-area").getContext("2d");
+                                    window.myPie = new Chart(ctx1, config1);
+                                    var ctx2 = document.getElementById("wip-chart-area").getContext("2d");
+                                    window.myPie = new Chart(ctx2, config2);
+                                      })
+                                });
     </script>
 </div>
 {% include 'partials/footer.html' %}
