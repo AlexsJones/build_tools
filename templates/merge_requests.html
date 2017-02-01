@@ -66,12 +66,17 @@
     </div>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
+
                     namespace = '/merge_requests';
                     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
                     socket.on('filter_requests', function() {
-                        alert('It worksf');
                     });
                     $("#filter_button").click(function() {
+                        var tb = document.getElementById('table');
+                        while(tb.rows.length > 0) {
+                        tb.deleteRow(1);
+                        }
+
                         socket.emit('requesting_updates', {
                             start_date: $('#sdate').val(),
                             end_date: $('#edate').val()
@@ -92,6 +97,8 @@
                                 var data1 = [];
                                 var data2 = [];
                                 var parsed = JSON.parse(msg);
+
+
 
                                 for (var key in parsed) {
 
