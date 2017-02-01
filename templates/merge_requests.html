@@ -45,33 +45,42 @@
     </table>
 
     <div id="open-canvas-holder" style="width:33%; float: left">
-        <label for="open-chart-area">
+        <label id="ol" for="open-chart-area"></label>
             <h3>Open Requests<br/></h3>
-            <canvas id="open-chart-area"/>
-        </label>
+        <canvas id="open-chart-area"/>
     </div>
 
     <div id="wip-canvas-holder" style="width:33%; float: right">
-        <label for="wip-chart-area">
+        <label id="wl" for="wip-chart-area"/>
             <h3>WIP Requests<br/></h3>
-            <canvas id="wip-chart-area"/>
-        </label>
+        <canvas id="wip-chart-area"/>
     </div>
 
     <div id="closed-canvas-holder" style="width:33%; margin: 0 auto">
-        <label for="closed-chart-area">
+        <label id ="cl" for="closed-chart-area"/>
             <h3>Closed Requests<br/></h3>
-            <canvas id="closed-chart-area"/>
-        </label>
+        <canvas id="closed-chart-area"/>
     </div>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
+
                     namespace = '/merge_requests';
                     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+                    var ctx = document.getElementById("open-chart-area").getContext("2d");
+                    var ctx1 = document.getElementById("closed-chart-area").getContext("2d");
+                    var ctx2 = document.getElementById("wip-chart-area").getContext("2d");
+                    var chart1 = null;
+                    var chart2 = null;
+                    var chart3 = null;
+
                     socket.on('filter_requests', function() {
-                        alert('It worksf');
                     });
                     $("#filter_button").click(function() {
+                        var tb = document.getElementById('table');
+                        while(tb.rows.length > 0) {
+                        tb.deleteRow(0);
+                        }
+
                         socket.emit('requesting_updates', {
                             start_date: $('#sdate').val(),
                             end_date: $('#edate').val()
@@ -92,6 +101,9 @@
                                 var data1 = [];
                                 var data2 = [];
                                 var parsed = JSON.parse(msg);
+
+
+
 
                                 for (var key in parsed) {
 
@@ -157,13 +169,26 @@
                                         }
                                     };
 
-                                    var ctx = document.getElementById("open-chart-area").getContext("2d");
-                                    window.myPie = new Chart(ctx, config);
-                                    var ctx1 = document.getElementById("closed-chart-area").getContext("2d");
-                                    window.myPie = new Chart(ctx1, config1);
-                                    var ctx2 = document.getElementById("wip-chart-area").getContext("2d");
-                                    window.myPie = new Chart(ctx2, config2);
-                                      })
+
+                                    if (chart1 != null) {
+                                        chart1.destroy();
+                                        ctx.clearRect(0, 0, ctx.width, ctx.height);
+                                    }
+                                    chart1  = new Chart(ctx, config);
+
+
+                                    if (chart2 != null) {
+                                        chart2.destroy();
+                                    }
+                                    chart2 = new Chart(ctx1, config1);
+
+                                    if (chart3 != null) {
+                                        chart3.destroy();
+                                    }
+                                    chart3 = new Chart(ctx2, config2);
+                                    })
+
+
                                 });
     </script>
 </div>
