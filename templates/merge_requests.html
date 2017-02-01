@@ -47,11 +47,8 @@
                 var open_requests = parsed[key]['open_requests'].length;
                 var closed_requests = parsed[key]['closed_requests'].length;
                 var wip_requests = parsed[key]['wip_requests'].length;
-
-                console.log(username);
-                console.log(open_requests);
-                console.log(closed_requests);
-                console.log(wip_requests); 
+                var table_row = "".concat(username , " " , open_requests , " " , closed_requests , " " , wip_requests);
+                console.log(table_row)
 
                // $("#stats").append("<tr><td></td>" + parsed[key].name + "td></td>td></td>td></td></tr>");
             }
