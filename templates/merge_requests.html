@@ -67,7 +67,12 @@
                     namespace = '/merge_requests';
                     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
                     var ctx = document.getElementById("open-chart-area").getContext("2d");
+                    var ctx1 = document.getElementById("closed-chart-area").getContext("2d");
+                    var ctx2 = document.getElementById("wip-chart-area").getContext("2d");
                     var chart1 = null;
+                    var chart2 = null;
+                    var chart3 = null;
+
                     socket.on('filter_requests', function() {
                     });
                     $("#filter_button").click(function() {
@@ -170,6 +175,17 @@
                                         ctx.clearRect(0, 0, ctx.width, ctx.height);
                                     }
                                     chart1  = new Chart(ctx, config);
+
+
+                                    if (chart2 != null) {
+                                        chart2.destroy();
+                                    }
+                                    chart2 = new Chart(ctx1, config1);
+
+                                    if (chart3 != null) {
+                                        chart3.destroy();
+                                    }
+                                    chart3 = new Chart(ctx2, config2);
                                     })
 
 
