@@ -13,7 +13,6 @@ from flask_socketio import SocketIO
 from src.socket_homepage_bindings import HomePageSocketNameSpace
 from src.socket_merge_request_bindings import MergeRequestSocketNameSpace
 from build_tools.services.gitlab_service import gitlab_service
-from src.utils import parse_string
 import os
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')

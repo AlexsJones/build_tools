@@ -2,7 +2,6 @@ from flask_socketio import Namespace, emit
 from flask import request
 from datetime import datetime
 from src.options import options
-from src.utils import parse_string
 import jsonpickle
 thread = None
 socket_global_ref = None
