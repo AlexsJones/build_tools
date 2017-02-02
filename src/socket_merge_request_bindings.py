@@ -22,7 +22,7 @@ class MergeRequestSocketNameSpace(Namespace):
 
         error = None
         start_date = params.gitlab_stats_start_date
-        end_date = params.gitlab_stats_start_date
+        end_date = params.gitlab_stats_end_date
 
         merge, user_info = self.gs.run(options)
 
@@ -48,7 +48,7 @@ class MergeRequestSocketNameSpace(Namespace):
         start_date = start_date.strftime('%d/%m/%Y')
         end_date = end_date.strftime('%d/%m/%Y')
 
-        if len(filtered_merges) == 0 and error is None:
+        if len(user_info) == 0 and error is None:
             page_status = "No requests were made between " + start_date + " and " + end_date
             emit('page_status', {'page_status': page_status})
         elif error is not None:
