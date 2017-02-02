@@ -1,15 +1,11 @@
 from flask_socketio import Namespace, emit
-from flask import session, request, render_template
+from flask import request
 from datetime import datetime
 from src.options import options
-from src.utils import parse_string, toJson
-import numpy as np
-import json
+from src.utils import parse_string
 import jsonpickle
 thread = None
 socket_global_ref = None
-import json
-import _thread
 
 
 class MergeRequestSocketNameSpace(Namespace):
@@ -24,7 +20,6 @@ class MergeRequestSocketNameSpace(Namespace):
         socket_global_ref = s
 
     def threaded_fetch_updates_worker(self, params):
-
 
         error = None
         start_date = params.gitlab_stats_start_date
@@ -70,8 +65,8 @@ class MergeRequestSocketNameSpace(Namespace):
 
     def on_requesting_updates(self, message):
 
-        start_date = parse_string(message['start_date'])
-        end_date = parse_string(message['end_date'])
+        start_date = message['start_date']
+        end_date = message['end_date']
         options.gitlab_stats_start_date = start_date
         options.gitlab_stats_end_date = end_date
 
