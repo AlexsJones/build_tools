@@ -15,6 +15,7 @@
                 $("#hor").text(msg['total_open']);
                 $("#hcr").text(msg['total_closed']);
                 $("#hwr").text(msg['total_wip']);
+                $("#ssd").text(msg['start_date']);
             });
 
         });
@@ -22,24 +23,24 @@
 
 <div class="container" xmlns="http://www.w3.org/1999/html">
     <div id="page-title" style="width: 50%; margin: 0 auto; margin-top: 80px">
-        <h1>Totals from the last sprint which started on {{ sprint_start }}</h1>
+        <h1 id="ssd"></h1>
     </div>
     <div id="open-requests-total" style="width:33%; float: left; margin-top: 30px">
               <h2>Open Requests</h2>
         <div id="open-value" style="width:50%; margin: 0 auto">
-            <h1 id="hor">{{ total_open }}</h1>
+            <h1 id="hor"></h1>
         </div>
     </div>
     <div id="wip-requests-total" style="width:33%; float: right; margin-top: 30px">
         <h2>WIP Requests</h2>
         <div id="wip-value" style="width:50%; margin: 0 auto">
-            <h1 id="hwr">{{ total_wip }}</h1>
+            <h1 id="hwr"></h1>
         </div>
     </div>
     <div id="closed-requests-total" style="width:33%; margin: 0 auto; margin-top: 60px">
             <h2>Closed Requests</h2>
         <div id="closed-value" style="width:50%; margin: 0 auto">
-            <h1 id="hcr">{{ total_closed }}</h1>
+            <h1 id="hcr"></h1>
         </div>
     </div>
     <script>
