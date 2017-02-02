@@ -22,7 +22,7 @@
 
 
     <div class="page_status">
-        <p id="ps" class=error><strong>{{ error }}</strong></p>
+        <p id="ps" class=error><strong></strong></p>
     </div>
 
     <div id="psm">{{ page_status }}</div>
@@ -86,6 +86,7 @@
                     socket.on('filter_requests', function() {
                     });
                     $("#filter_button").click(function() {
+
                         var tb = document.getElementById('table');
                         while(tb.rows.length > 0) {
                         tb.deleteRow(0);
@@ -94,6 +95,7 @@
                             start_date: $('#start-date').val(),
                             end_date: $('#end-date').val()
                         });
+                        document.getElementById(page_status).innerHTML = "";
                     });
                     socket.on('error_raised', function(msg) {
                         $("#ps").text(msg['error']);
