@@ -13,6 +13,7 @@ from flask_socketio import SocketIO
 from src.socket_homepage_bindings import HomePageSocketNameSpace
 from src.socket_merge_request_bindings import MergeRequestSocketNameSpace
 from build_tools.services.gitlab_service import gitlab_service
+import _thread
 import os
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -43,5 +44,8 @@ if __name__ == "__main__":
     merge_name_space.set_socket(socketio)
     socketio.on_namespace(merge_name_space)
 
-    socketio.run(app, debug=True, port=2001)
+    _thread.start_new_thread(socketio.run(app, debug=True, port=2001), ("Thread1", 2))
+    _thread.start_new_thread(socketio.run(app, debug=True, port=2001), ("Thread2", 4))
+
+
 
