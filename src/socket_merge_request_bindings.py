@@ -65,8 +65,8 @@ class MergeRequestSocketNameSpace(Namespace):
 
     def on_requesting_updates(self, message):
 
-        start_date = parse_string(message['start_date'])
-        end_date = parse_string(message['end_date'])
+        start_date = message['start_date']
+        end_date = message['end_date']
         options.gitlab_stats_start_date = start_date
         options.gitlab_stats_end_date = end_date
 

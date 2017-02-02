@@ -5,11 +5,11 @@
         <!--<form id="date_input" action="/merge_requests" method="POST">-->
         <div id="start-date-div" style="float: left">
             <h3>Start Date</h3>
-            <input class="form-control" id="start-date" name="start-date" placeholder="MM/DD/YYY" type="text"/>
+            <input class="form-control" id="start-date" name="start-date" placeholder="DD/MM/YYY" type="text"/>
         </div>
         <div id="end-date-div" style="overflow: hidden; margin-left: 10px, margin-top: -100px">
             <h3>End Date</h3>
-            <input class="form-control" id="end-date" name="end-date" placeholder="MM/DD/YYY" type="text"/>
+            <input class="form-control" id="end-date" name="end-date" placeholder="DD/MM/YYY" type="text"/>
         </div>
         <div id="filter_button" style="overflow: hidden; position:absolute; left:460px; top:136px">
             <input type="button" value="Filter Requests">
@@ -74,6 +74,7 @@
                     };
                     start_date_input.datepicker(options);
                     end_date_input.datepicker(options);
+
                     namespace = '/merge_requests';
                     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
                     var ctx = document.getElementById("open-chart-area").getContext("2d");
@@ -90,8 +91,8 @@
                         tb.deleteRow(0);
                         }
                         socket.emit('requesting_updates', {
-                            start_date: $('#sdate').val(),
-                            end_date: $('#edate').val()
+                            start_date: $('#start-date').val(),
+                            end_date: $('#end-date').val()
                         });
                     });
                     socket.on('error_raised', function(msg) {
