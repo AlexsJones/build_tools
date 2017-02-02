@@ -3,6 +3,7 @@ from flask import session, request, render_template
 from build_tools.services.gitlab_service import gitlab_service
 from threading import Thread
 from src.options import options
+from src.utils import get_first_day
 thread = None
 socket_global_ref = None
 
@@ -37,14 +38,13 @@ class HomePageSocketNameSpace(Namespace):
                 tc += 1
 
         to = to - tw
+
+        fd = get_first_day()
+        fd = fd.strftime("%d/%m/%Y")
+        fd = "Totals from the last sprint which started on " + fd
+
         emit('populate_updates',
-             {'total_open': to, 'total_closed': tc, 'total_wip': tw})
-
-    def on_requesting_updates(self, message):
-        tr = Thread(target=self.thread_worker())
-        tr.run()
-
-
+             {'total_open': to, 'total_closed': tc, 'total_wip': tw, "start_date": fd})
 
     @staticmethod
     def fill_table(self, message):
