@@ -1,6 +1,7 @@
 from flask_socketio import Namespace, emit
 from flask import session, request, render_template
 from build_tools.services.gitlab_service import gitlab_service
+from threading import Thread
 from src.options import options
 from src.utils import get_first_day
 thread = None
@@ -19,9 +20,7 @@ class HomePageSocketNameSpace(Namespace):
         global socket_global_ref
         socket_global_ref = s
 
-    def on_requesting_updates(self, message):
-        session['receive_count'] = session.get('receive_count', 0) + 1
-
+    def thread_worker(self):
         merge, user_info = self.gs.run(options)
 
         to = 0
