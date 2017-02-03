@@ -1,6 +1,5 @@
 from flask_socketio import Namespace, emit
-from flask import session, request, render_template
-from build_tools.services.gitlab_service import gitlab_service
+from flask import session, request
 from threading import Thread
 from src.options import options
 thread = None
@@ -43,8 +42,6 @@ class HomePageSocketNameSpace(Namespace):
     def on_requesting_updates(self, message):
         tr = Thread(target=self.thread_worker())
         tr.run()
-
-
 
     @staticmethod
     def fill_table(self, message):
