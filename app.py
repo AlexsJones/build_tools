@@ -7,7 +7,7 @@
 #     Description         :
 ##########################################################################
 
-from flask import Flask, Response, render_template, request
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 
 from src.socket_homepage_bindings import HomePageSocketNameSpace
@@ -28,12 +28,13 @@ def index():
 
     return render_template("homepage.html")
 
+
 @app.route("/merge_requests")
 def merge_requests():
     return render_template("merge_requests.html")
 
-if __name__ == "__main__":
 
+def service_setup():
     gs = gitlab_service()
 
     home_name_space = HomePageSocketNameSpace(gs, '/home')
@@ -45,3 +46,18 @@ if __name__ == "__main__":
     socketio.on_namespace(merge_name_space)
 
     _thread.start_new_thread(socketio.run(app, debug=True, port=2001), ("Thread1", 2))
+
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+
+def shutdown():
+    shutdown_server()
+    return 'Server shutting down...'
+
+if __name__ == "__main__":
+    service_setup()
