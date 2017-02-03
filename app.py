@@ -45,7 +45,3 @@ if __name__ == "__main__":
     socketio.on_namespace(merge_name_space)
 
     _thread.start_new_thread(socketio.run(app, debug=True, port=2001), ("Thread1", 2))
-    _thread.start_new_thread(socketio.run(app, debug=True, port=2001), ("Thread2", 4))
-
-
-
