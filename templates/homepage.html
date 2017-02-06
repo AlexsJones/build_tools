@@ -42,15 +42,6 @@
             <h1 id="hcr">{{ total_closed }}</h1>
         </div>
     </div>
-    <script>
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
-    socket.on('connect', function() {
-        socket.emit('my event', {data: 'I\'m connected!'});
-        console.log('Connection Made');
-    });
-        setTimeout(function(){
-        window.location.reload(1);
-        }, 120000);
-    </script>
+
 </div>
 {% include 'partials/footer.html' %}
