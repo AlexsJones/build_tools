@@ -11,7 +11,6 @@ class HomePageSocketNameSpace(Namespace):
     def __init__(self, service, namespace=None):
         super(Namespace, self).__init__(namespace)
         self.gs = service
-        self.is_fetching=False
 
     @staticmethod
     def set_socket(s):

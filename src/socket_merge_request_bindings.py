@@ -11,12 +11,11 @@ class MergeRequestSocketNameSpace(Namespace):
     def __init__(self, service, namespace=None):
         super(Namespace, self).__init__(namespace)
         self.gs = service
-        self.is_fetching = False
 
     @staticmethod
     def set_socket(s):
         global socket_global_ref
-        socket_global_ref = s
+        socket_global_ref=s
 
     def threaded_fetch_updates_worker(self, params):
 
