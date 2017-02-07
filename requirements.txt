@@ -1,3 +1,4 @@
+appdirs==1.4.0
 autopep8==1.2.4
 cffi==1.9.1
 click==6.7
@@ -8,12 +9,15 @@ gunicorn==19.6.0
 idna==2.1
 itsdangerous==0.24
 Jinja2==2.9.4
+jsonpickle==0.9.4
 MarkupSafe==0.23
+packaging==16.8
 paramiko==2.1.1
 pep8==1.7.0
 pyasn1==0.1.9
 pycparser==2.17
 pycrypto==2.6.1
+pyparsing==2.1.10
 python-engineio==1.1.2
 python-gitlab==0.18
 python-socketio==1.6.3
