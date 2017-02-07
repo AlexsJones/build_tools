@@ -8,7 +8,6 @@
   "description": "Test",
   "main": "index.html",
   "keywords": [
-    "bower",
     "angular",
     "bootstrap"
   ],
