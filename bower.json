@@ -1,5 +1,5 @@
 {
-  "name": "BowerTest",
+  "name": "bowertest",
   "homepage": "homepage.html",
   "authors": [
     "Marsh",
@@ -8,9 +8,9 @@
   "description": "Test",
   "main": "index.html",
   "keywords": [
-    "bower",
     "angular",
-    "bootstrap"
+    "bootstrap",
+    "chart.js"
   ],
   "license": "MIT",
   "ignore": [
@@ -24,5 +24,6 @@
     "angular": "angularjs#^1.6.1",
     "bootstrap": "^3.3.7",
     "chart.js": "^2.4.0"
+    "bootstrap-datepicker":"^1.6.4"
   }
 }
