@@ -23,7 +23,6 @@
   "dependencies": {
     "angular": "angularjs#^1.6.1",
     "bootstrap": "^3.3.7",
-<<<<<<< HEAD
     "chart.js": "^2.4.0",
     "bootstrap-datepicker": "^1.6.4"
   }
