@@ -22,7 +22,6 @@ app.config['SECRET_KEY'] = 'test_key'
 async_mode = 'threading'
 socketio = SocketIO(app, async_mode=async_mode)
 
-
 @app.route("/")
 def index():
 
