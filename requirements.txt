@@ -1,8 +1,5 @@
 appdirs==1.4.0
 autopep8==1.2.4
-angular==1.6.1
-bootstrap==3.3.7
-chart.js==2.4.0
 cffi==1.9.1
 click==6.7
 cryptography==1.7.1
