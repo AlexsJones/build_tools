@@ -10,7 +10,8 @@
   "keywords": [
     "angular",
     "bootstrap",
-    "chart.js"
+    "chart.js",
+    "bootstrap-datepicker"
   ],
   "license": "MIT",
   "ignore": [

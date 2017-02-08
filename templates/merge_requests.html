@@ -5,11 +5,11 @@
         <!--<form id="date_input" action="/merge_requests" method="POST">-->
         <div id="start-date-div" style="float: left">
             <h3>Start Date</h3>
-            <input class="form-control" id="start-date" name="start-date" placeholder="DD/MM/YYY" type="text"/>
+            <input class="form-control" id="start-date" name="start-date" placeholder="DD/MM/YYY" type="date"/>
         </div>
         <div id="end-date-div" style="overflow: hidden; margin-left: 10px, margin-top: -100px">
             <h3>End Date</h3>
-            <input class="form-control" id="end-date" name="end-date" placeholder="DD/MM/YYY" type="text"/>
+            <input class="form-control" id="end-date" name="end-date" placeholder="DD/MM/YYY" type="date"/>
         </div>
         <div id="filter_button" style="overflow: hidden; margin-left: 5px; margin-top: 60px">
             <input type="button" value="Filter Requests">
@@ -91,6 +91,8 @@
                         while(tb.rows.length > 0) {
                         tb.deleteRow(0);
                         }
+                        alert('request');
+
                         socket.emit('requesting_updates', {
                             start_date: $('#start-date').val(),
                             end_date: $('#end-date').val()
