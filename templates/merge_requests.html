@@ -1,6 +1,6 @@
 {% include 'partials/header.html' %}
 
-<div class="container" xmlns="http://www.w3.org/1999/html">
+<div id="merge_container" class="container" xmlns="http://www.w3.org/1999/html">
     <div id="calenders" style="margin-top:80px; display: flex; flex: 1">
         <!--<form id="date_input" action="/merge_requests" method="POST">-->
         <div id="start-date-div" style="float: left">
@@ -60,6 +60,11 @@
     </div>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
+
+
+                    $('#loading').hide();
+
+
                     var start_date_input=$('input[name="start-date"]');
                     var end_date_input=$('input[name="end-date"]');
                     var container =$('.calenders').length>0 ? $('.calenders').parent() : "body";
@@ -83,12 +88,13 @@
                     socket.on('filter_requests', function() {
                     });
                     $("#filter_button").click(function() {
+                        $('#loading').show();
+                        $('#merge_container').hide();
 
                         var tb = document.getElementById('table');
                         while(tb.rows.length > 0) {
                         tb.deleteRow(0);
                         }
-                        alert('request');
 
                         socket.emit('requesting_updates', {
                             start_date: $('#start-date').val(),
@@ -103,6 +109,9 @@
                         $("#psm").text(msg['page_status']);
                     });
                     socket.on('table', function(msg) {
+
+                        $('#loading').hide();
+                        $('#merge_container').show();
                                 var bgcol = [];
                                 var bgcol1 = [];
                                 var bgcol2 = [];

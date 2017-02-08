@@ -4,9 +4,13 @@
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
             namespace = '/home';
+
+
             var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
             socket.on('connect', function() {
+                $('#loading').show();
+                $('#homepage_content').hide();
                 socket.emit('requesting_updates', {data: 'I\'m connected!'});
             });
 
@@ -15,12 +19,15 @@
                 $("#hor").text(msg['total_open']);
                 $("#hcr").text(msg['total_closed']);
                 $("#hwr").text(msg['total_wip']);
+
+                $('#loading').hide();
+                $('#homepage_content').show();
             });
 
         });
     </script>
 
-<div class="container" xmlns="http://www.w3.org/1999/html">
+<div id="homepage_content" class="container" xmlns="http://www.w3.org/1999/html">
     <div id="page-title" style="width: 50%; margin: 0 auto; margin-top: 80px">
         <h1>Totals from the last sprint which started on {{ sprint_start }}</h1>
     </div>
