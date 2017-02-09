@@ -44,7 +44,7 @@ def service_setup():
     merge_name_space.set_socket(socketio)
     socketio.on_namespace(merge_name_space)
 
-    _thread.start_new_thread(socketio.run(app, debug=True, port=2001), ("Thread1", 2))
+    _thread.start_new_thread(socketio.run(app, debug=True, host='0.0.0.0', port=2001), ("Thread1", 2))
 
 
 def shutdown_server():

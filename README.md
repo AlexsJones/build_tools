@@ -1,4 +1,4 @@
-# ce-devops-stats-1
+# ce-devops-stats
 Stats service for ce-devices teams 
 
 To Launch with docker 
