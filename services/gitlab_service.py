@@ -3,13 +3,13 @@
 #     File Name           :     services/gitlab_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-21 13:59]
-#     Last Modified       :     [2017-01-20 08:46]
+#     Last Modified       :     [2017-02-09 12:03]
 #     Description         :
 #################################################################################
 import gitlab
 import datetime
 from datetime import datetime, timedelta
-
+from utils.rate_limit import RateLimited
 
 class gitlab_service():
 
@@ -50,6 +50,7 @@ class gitlab_service():
             comparison_operator(m)
         return mr
 
+    @RateLimited(1)
     def run(self, options):
         print("Running with options %s " % options)
         if not options.command:
