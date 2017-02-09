@@ -1,5 +1,7 @@
 from flask_socketio import Namespace, emit
 from flask import request
+from flask import flash, redirect
+from flask import current_app, url_for
 from datetime import datetime
 from src.options import options
 import jsonpickle
@@ -19,7 +21,7 @@ class MergeRequestSocketNameSpace(Namespace):
         global socket_global_ref
         socket_global_ref=s
 
-    def threaded_fetch_updates_worker(self, params):
+    def fetch_updates(self, params):
 
         error = None
         start_date = params.gitlab_stats_start_date
@@ -35,34 +37,13 @@ class MergeRequestSocketNameSpace(Namespace):
             merge = storage_object.merge_data
             user_info = storage_object.user_data
         else:
-            merge, user_info = self.gs.run(options)
+            try:
+                merge, user_info = self.gs.run(options)
+            except Exception as s:
+                print(str(s))
+                emit('kill_loading', '{}')
 
             self.results_store[key] = TemporaryStorageObject(merge, user_info)
-
-
-
-
-        start_date = datetime.strptime(start_date, '%d/%m/%Y')
-        if start_date > datetime.now():
-            error = "The Start date cannot be in the future."
-            emit('error_raised',
-                 {'error': error})
-
-        end_date = datetime.strptime(end_date, '%d/%m/%Y')
-
-        if start_date > end_date:
-            error = "The end date cannot be before the start date."
-            emit('error_raised',
-                 {'error': error})
-
-        filtered_merges = []
-
-        for x in merge:
-            merge_date = self.gs.parse_datetime(x.created_at)
-            if start_date <= merge_date <= end_date:
-                filtered_merges.append(x)
-        start_date = start_date.strftime('%d/%m/%Y')
-        end_date = end_date.strftime('%d/%m/%Y')
 
         if len(user_info) == 0 and error is None:
             page_status = "No requests were made between " + start_date + " and " + end_date
@@ -82,11 +63,17 @@ class MergeRequestSocketNameSpace(Namespace):
 
         start_date = message['start_date']
         end_date = message['end_date']
+
+        if not start_date or not end_date:
+            emit('kill_loading', '{}')
+            emit('error', '{ error: "Date is required" ')
+            return
+
         options.gitlab_stats_start_date = start_date
         options.gitlab_stats_end_date = end_date
 
         # Needs to be threaded out
-        self.threaded_fetch_updates_worker(options)
+        self.fetch_updates(options)
 
         @staticmethod
         def on_disconnect():

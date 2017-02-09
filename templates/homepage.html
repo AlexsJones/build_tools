@@ -1,4 +1,7 @@
 {% include 'partials/header.html' %}
+
+{% include 'partials/alerts.html' %}
+
     <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
@@ -26,10 +29,17 @@
 
         });
     </script>
-
-<div id="homepage_content" class="container" xmlns="http://www.w3.org/1999/html">
+<style>
+    .container {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+</style>
+<div id="homepage_content" class="container">
     <div id="page-title" style="width: 50%; margin: 0 auto; margin-top: 80px">
-        <h1>Totals from the last sprint which started on {{ sprint_start }}</h1>
+        <h2>Stats from T-14 days</h2>
     </div>
     <div id="open-requests-total" style="width:33%; float: left; margin-top: 30px">
               <h2>Open Requests</h2>

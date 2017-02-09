@@ -9,12 +9,15 @@
 
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO
-
 from src.socket_homepage_bindings import HomePageSocketNameSpace
 from src.socket_merge_request_bindings import MergeRequestSocketNameSpace
-from build_tools.services.gitlab_service import gitlab_service
+from src.bindings import Bindings
+import os,sys
+sys.path.insert(0, "build_tools/utils")
+sys.path.insert(0, "build_tools/services")
+from gitlab_service import gitlab_service
 import _thread
-import os
+
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, static_folder='bower_components', template_folder=tmpl_dir)
@@ -36,6 +39,9 @@ def merge_requests():
 def service_setup():
     gs = gitlab_service()
 
+    b = Bindings(gs,'/binding')
+    
+
     home_name_space = HomePageSocketNameSpace(gs, '/home')
     home_name_space.set_socket(socketio)
     socketio.on_namespace(home_name_space)
@@ -44,7 +50,7 @@ def service_setup():
     merge_name_space.set_socket(socketio)
     socketio.on_namespace(merge_name_space)
 
-    _thread.start_new_thread(socketio.run(app, debug=True, host='0.0.0.0', port=2001), ("Thread1", 2))
+    socketio.run(app, debug=True, host='0.0.0.0', port=2001)
 
 
 def shutdown_server():

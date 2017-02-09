@@ -1,5 +1,14 @@
 {% include 'partials/header.html' %}
 
+{% include 'partials/alerts.html' %}
+<style>
+    .container {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+</style>
 <div id="merge_container" class="container" xmlns="http://www.w3.org/1999/html">
     <div id="calenders" style="margin-top:80px; display: flex; flex: 1">
         <!--<form id="date_input" action="/merge_requests" method="POST">-->
@@ -64,7 +73,6 @@
 
                     $('#loading').hide();
 
-
                     var start_date_input=$('input[name="start-date"]');
                     var end_date_input=$('input[name="end-date"]');
                     var container =$('.calenders').length>0 ? $('.calenders').parent() : "body";
@@ -104,6 +112,13 @@
                     });
                     socket.on('error_raised', function(msg) {
                         $("#ps").text(msg['error']);
+                    });
+                    socket.on('kill_loading',function(msg) {
+                        $('#loading').hide();
+                        $('#merge_container').show();
+                    });
+                    socket.on('error', function(msg) {
+                        alert(msg);
                     });
                     socket.on('page_status', function(msg) {
                         $("#psm").text(msg['page_status']);
