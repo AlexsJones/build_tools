@@ -5,12 +5,14 @@ from src.options import options
 import jsonpickle
 thread = None
 socket_global_ref = None
+from src.temporary_storage_object import TemporaryStorageObject
 
 
 class MergeRequestSocketNameSpace(Namespace):
     def __init__(self, service, namespace=None):
         super(Namespace, self).__init__(namespace)
         self.gs = service
+        self.results_store = dict([])
 
     @staticmethod
     def set_socket(s):
@@ -23,7 +25,22 @@ class MergeRequestSocketNameSpace(Namespace):
         start_date = params.gitlab_stats_start_date
         end_date = params.gitlab_stats_end_date
 
-        merge, user_info = self.gs.run(options)
+        key = start_date + "-" + end_date
+
+        merge = None
+        user_info = None
+        if key in self.results_store.keys():
+            # Use results that are stored
+            storage_object = self.results_store.get(key)
+            merge = storage_object.merge_data
+            user_info = storage_object.user_data
+        else:
+            merge, user_info = self.gs.run(options)
+
+            self.results_store[key] = TemporaryStorageObject(merge, user_info)
+
+
+
 
         start_date = datetime.strptime(start_date, '%d/%m/%Y')
         if start_date > datetime.now():

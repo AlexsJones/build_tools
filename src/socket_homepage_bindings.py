@@ -4,6 +4,7 @@ from threading import Thread
 from src.options import options
 thread = None
 socket_global_ref = None
+from src.temporary_storage_object import TemporaryStorageObject
 
 
 class HomePageSocketNameSpace(Namespace):
@@ -11,6 +12,7 @@ class HomePageSocketNameSpace(Namespace):
     def __init__(self, service, namespace=None):
         super(Namespace, self).__init__(namespace)
         self.gs = service
+        self.results_store = dict([])
 
     @staticmethod
     def set_socket(s):
@@ -18,7 +20,20 @@ class HomePageSocketNameSpace(Namespace):
         socket_global_ref = s
 
     def thread_worker(self):
-        merge, user_info = self.gs.run(options)
+
+        key = options.gitlab_stats_end_date + "-" + options.gitlab_stats_end_date
+
+        merge = None
+        user_info = None
+        if key in self.results_store.keys():
+            # Use results that are stored
+            storage_object = self.results_store.get(key)
+            merge = storage_object.merge_data
+            user_info = storage_object.user_data
+        else:
+            merge, user_info = self.gs.run(options)
+
+            self.results_store[key] = TemporaryStorageObject(merge, user_info)
 
         to = 0
         tc = 0
