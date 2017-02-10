@@ -4,32 +4,7 @@
 
     <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
-            namespace = '/home';
-
-
-            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
-
-            socket.on('connect', function() {
-                $('#loading').show();
-                $('#homepage_content').hide();
-                socket.emit('requesting_updates', {data: 'I\'m connected!'});
-            });
-
-            socket.on('populate_updates', function(msg) {
-
-                $("#hor").text(msg['total_open']);
-                $("#hcr").text(msg['total_closed']);
-                $("#hwr").text(msg['total_wip']);
-
-                $('#loading').hide();
-                $('#homepage_content').show();
-            });
-
-        });
-    </script>
-<style>
+ <style>
     .container {
     position: absolute;
     top: 40%;
@@ -37,7 +12,9 @@
     transform: translateX(-50%) translateY(-50%);
 }
 </style>
-<div id="homepage_content" class="container">
+
+<div id="homepage_content" class="container" style="text-align:center;">
+
     <div id="page-title" style="width: 50%; margin: 0 auto; margin-top: 80px">
         <h2>Stats from T-14 days</h2>
     </div>
@@ -61,4 +38,24 @@
     </div>
 
 </div>
+
+<script>
+    $(document).ready(function() {
+
+
+    namespace = '/bindings';
+
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
+            socket.on('homepage_room_updates', function(msg) {
+
+                $("#hor").text(msg['total_open']);
+                $("#hcr").text(msg['total_closed']);
+                $("#hwr").text(msg['total_wip']);
+
+            });
+
+
+});
+</script>
 {% include 'partials/footer.html' %}

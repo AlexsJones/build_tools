@@ -85,16 +85,17 @@
                     start_date_input.datepicker(options);
                     end_date_input.datepicker(options);
 
-                    namespace = '/merge_requests';
+                    namespace = '/bindings';
                     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
                     var ctx = document.getElementById("open-chart-area").getContext("2d");
                     var ctx1 = document.getElementById("closed-chart-area").getContext("2d");
                     var ctx2 = document.getElementById("wip-chart-area").getContext("2d");
+
                     var chart1 = null;
                     var chart2 = null;
                     var chart3 = null;
-                    socket.on('filter_requests', function() {
-                    });
+
+
                     $("#filter_button").click(function() {
                         $('#loading').show();
                         $('#merge_container').hide();
@@ -104,12 +105,15 @@
                         tb.deleteRow(0);
                         }
 
-                        socket.emit('requesting_updates', {
+                        socket.emit('fetch_merge_request_updates', {
                             start_date: $('#start-date').val(),
                             end_date: $('#end-date').val()
                         });
-                        document.getElementById(page_status).innerHTML = "";
+                        document.getElementById("page_status").innerHTML = "";
                     });
+
+
+
                     socket.on('error_raised', function(msg) {
                         $("#ps").text(msg['error']);
                     });
