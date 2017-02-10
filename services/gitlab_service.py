@@ -3,13 +3,13 @@
 #     File Name           :     services/gitlab_service.py
 #     Created By          :     anon
 #     Creation Date       :     [2016-09-21 13:59]
-#     Last Modified       :     [2017-02-09 12:03]
+#     Last Modified       :     [2017-02-10 13:49]
 #     Description         :
 #################################################################################
 import gitlab
 import datetime
 from datetime import datetime, timedelta
-from utils.rate_limit import RateLimited
+from .. utils.rate_limit import RateLimited
 
 class gitlab_service():
 

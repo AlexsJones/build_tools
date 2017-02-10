@@ -1,0 +1,85 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf810
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-Bold;}
+{\colortbl;\red255\green255\blue255;\red109\green109\blue109;\red32\green32\blue32;\red191\green100\blue38;
+\red153\green168\blue186;\red14\green110\blue109;\red152\green54\blue29;\red117\green114\blue185;\red86\green132\blue173;
+\red173\green169\blue32;}
+{\*\expandedcolortbl;;\csgenericrgb\c42745\c42745\c42745;\csgenericrgb\c12549\c12549\c12549;\csgenericrgb\c74902\c39216\c14902;
+\csgenericrgb\c60000\c65882\c72941;\csgenericrgb\c5490\c43137\c42745;\csgenericrgb\c59608\c21176\c11373;\csgenericrgb\c45882\c44706\c72549;\csgenericrgb\c33725\c51765\c67843;
+\csgenericrgb\c67843\c66275\c12549;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf2 \cb3 #! /usr/bin/env python\uc0\u8232 ##########################################################################\u8232 #     File Name           :     app.py\u8232 #     Created By          :     jonesax\u8232 #     Creation Date       :     [2017-01-12 11:49]\u8232 #     Last Modified       :     [2017-01-12 14:33]\u8232 #     Description         :\u8232 ##########################################################################\u8232 \u8232 
+\f1\b \cf4 import 
+\f0\b0 \cf5 os\uc0\u8232 
+\f1\b \cf4 import 
+\f0\b0 \cf5 random\uc0\u8232 
+\f1\b \cf4 import 
+\f0\b0 \cf5 string\uc0\u8232 
+\f1\b \cf4 import 
+\f0\b0 \cf5 threading\uc0\u8232 
+\f1\b \cf4 from 
+\f0\b0 \cf5 src.options 
+\f1\b \cf4 import 
+\f0\b0 \cf5 options\uc0\u8232 
+\f1\b \cf4 from 
+\f0\b0 \cf5 flask 
+\f1\b \cf4 import 
+\f0\b0 \cf5 Flask\cf4 , \cf5 render_template\cf4 , \cf5 request\uc0\u8232 
+\f1\b \cf4 from 
+\f0\b0 \cf5 flask_socketio 
+\f1\b \cf4 import 
+\f0\b0 \cf5 SocketIO\cf4 , \cf5 emit\cf4 , \cf5 join_room\cf4 , \cf5 close_room\cf4 , \cf5 leave_room\cf4 , \cf5 rooms\uc0\u8232 
+\f1\b \cf4 from 
+\f0\b0 \cf5 src.temporary_storage_object 
+\f1\b \cf4 import 
+\f0\b0 \cf5 TemporaryStorageObject\uc0\u8232 
+\f1\b \cf4 import 
+\f0\b0 \cf5 jsonpickle\uc0\u8232 
+\f1\b \cf4 import 
+\f0\b0 \cf5 sys\uc0\u8232 sys.path.append(\cf6 'build_tools'\cf5 )\uc0\u8232 sys.path.append(\cf6 'build_tools/utils/rate_limit'\cf5 )\uc0\u8232 sys.path.append(\cf6 'build_tools/services'\cf5 )\uc0\u8232 
+\f1\b \cf4 from 
+\f0\b0 \cf5 gitlab_service 
+\f1\b \cf4 import 
+\f0\b0 \cf5 gitlab_service\uc0\u8232 \cf2 # Configuration #################################################################################\uc0\u8232 \cf5 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__))\cf4 , \cf6 'templates'\cf5 )\uc0\u8232 app = Flask(__name__\cf4 , \cf7 static_folder\cf5 =\cf6 'bower_components'\cf4 , \cf7 template_folder\cf5 =tmpl_dir)\uc0\u8232 app.config[\cf6 'SECRET_KEY'\cf5 ] = \cf6 ''\cf5 .join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) 
+\f1\b \cf4 for 
+\f0\b0 \cf5 _ 
+\f1\b \cf4 in 
+\f0\b0 \cf8 range\cf5 (\cf9 32\cf5 ))\uc0\u8232 async_mode = \cf6 'threading'\uc0\u8232 \cf5 socketio = SocketIO(app\cf4 , \cf7 async_mode\cf5 =async_mode)\uc0\u8232 results_store = \cf8 dict\cf5 ([])\uc0\u8232 gs = gitlab_service()\u8232 \cf2 # Routes #######################################################################################\uc0\u8232 \u8232 \u8232 \cf5 @\cf10 app.route\cf5 (\cf6 "/"\cf5 )\uc0\u8232 
+\f1\b \cf4 def \cf5 index
+\f0\b0 ():\uc0\u8232 \u8232     
+\f1\b \cf4 return 
+\f0\b0 \cf5 render_template(\cf6 "homepage.html"\cf5 )\uc0\u8232 \u8232 \u8232 @\cf10 app.route\cf5 (\cf6 "/merge_requests"\cf5 )\uc0\u8232 
+\f1\b \cf4 def \cf5 merge_requests
+\f0\b0 ():\uc0\u8232     
+\f1\b \cf4 return 
+\f0\b0 \cf5 render_template(\cf6 "merge_requests.html"\cf5 )\uc0\u8232 \cf2 # Socketio #####################################################################################\uc0\u8232 \u8232 \cf5 default_room = \cf6 'ce-devops-stats-room'\uc0\u8232 \u8232 \u8232 \cf5 @\cf10 socketio.on\cf5 (\cf6 'connect'\cf4 , \cf7 namespace\cf5 =\cf6 '/bindings'\cf5 )\uc0\u8232 
+\f1\b \cf4 def \cf5 connect
+\f0\b0 ():\uc0\u8232 \u8232     join_room(default_room)\u8232     \cf8 print\cf5 (\cf6 'Client ' \cf5 + request.sid + \cf6 " joined room " \cf5 + default_room)\uc0\u8232     \cf8 print\cf5 (rooms())\uc0\u8232 \u8232 \u8232 @\cf10 socketio.on\cf5 (\cf6 'disconnect'\cf4 , \cf7 namespace\cf5 =\cf6 '/bindings'\cf5 )\uc0\u8232 
+\f1\b \cf4 def \cf5 disconnect
+\f0\b0 ():\uc0\u8232     leave_room(default_room)\u8232     \cf8 print\cf5 (\cf6 'Client ' \cf5 + request.sid + \cf6 " left room " \cf5 + default_room)\uc0\u8232 \u8232 \u8232 \cf2 # Logic ########################################################################################\uc0\u8232 
+\f1\b \cf4 def \cf5 fetch_homepage_updates
+\f0\b0 ():\uc0\u8232     \cf8 print\cf5 (\cf6 "Fetching...."\cf5 )\uc0\u8232     \cf2 error \cf5 = 
+\f1\b \cf4 None\uc0\u8232     
+\f0\b0 \cf5 start_date = options.gitlab_stats_start_date\uc0\u8232     end_date = options.gitlab_stats_end_date\u8232 \u8232     key = start_date + \cf6 "-" \cf5 + end_date\uc0\u8232 \u8232     merge = 
+\f1\b \cf4 None\uc0\u8232     
+\f0\b0 \cf5 user_info = 
+\f1\b \cf4 None\uc0\u8232     if 
+\f0\b0 \cf5 key 
+\f1\b \cf4 in 
+\f0\b0 \cf5 results_store.keys():\uc0\u8232         \cf2 # Use results that are stored\uc0\u8232         \cf5 storage_object = results_store.get(key)\uc0\u8232         \cf2 merge \cf5 = storage_object.merge_data\uc0\u8232         user_info = storage_object.user_data\u8232     
+\f1\b \cf4 else
+\f0\b0 \cf5 :\uc0\u8232         
+\f1\b \cf4 try
+\f0\b0 \cf5 :\uc0\u8232             merge\cf4 , \cf5 user_info = gs.run(options)\uc0\u8232         
+\f1\b \cf4 except 
+\f0\b0 \cf8 Exception 
+\f1\b \cf4 as 
+\f0\b0 \cf5 s:\uc0\u8232             \cf8 print\cf5 (\cf8 str\cf5 (s))\uc0\u8232             emit(\cf6 'kill_loading'\cf4 , \cf6 '\{\}'\cf5 )\uc0\u8232 \u8232         results_store[key] = TemporaryStorageObject(merge\cf4 , \cf5 user_info)\uc0\u8232 \u8232     encoded_data = jsonpickle.encode(user_info)\u8232 \u8232     socketio.emit(\cf6 'homepage_room_updates'\cf4 , \cf5 encoded_data \cf4 , \cf7 room\cf5 =default_room\cf4 , \cf7 namespace\cf5 =\cf6 '/bindings'\cf5 )\uc0\u8232 \u8232     threading.Timer(\cf9 5\cf4 , \cf5 fetch_homepage_updates).start()\uc0\u8232 \cf2 ################################################################################################\uc0\u8232 
+\f1\b \cf4 if 
+\f0\b0 \cf5 __name__ == \cf6 "__main__"\cf5 :\uc0\u8232 \u8232 \u8232     fetch_homepage_updates()\u8232 \u8232     socketio.run(app\cf4 , \cf7 debug\cf5 =
+\f1\b \cf4 False
+\f0\b0 , \cf7 use_reloader\cf5 =
+\f1\b \cf4 False
+\f0\b0 \cf5 )\uc0\u8232 \
+}
