@@ -1,0 +1,23 @@
+{
+  "name": "ce-devops-stats",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "bower": "^1.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "npm install && ./node_modules/bower/bin/bower install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sky-uk/ce-devops-stats.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sky-uk/ce-devops-stats/issues"
+  },
+  "homepage": "https://github.com/sky-uk/ce-devops-stats#readme"
+}

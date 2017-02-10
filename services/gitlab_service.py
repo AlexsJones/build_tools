@@ -7,11 +7,13 @@
 #     Description         :
 #################################################################################
 import gitlab
+from gitlab import GitlabGetError
 import datetime
 from datetime import datetime, timedelta
 from utils.rate_limit import RateLimited
 
 class gitlab_service():
+
 
     def additional_options(self, parser):
         parser.add_argument("--command",
@@ -119,7 +121,11 @@ class gitlab_service():
             merge_list = self.walk_merge_request(p, options.gitlab_max_size, comparison)
 
             for b in branches:
-                print(b)
+                try:
+                    branch = p.branches.get(b)
+                    print(branch.name)
+                except GitlabGetError:
+                    pass
 
             return merge_list
 

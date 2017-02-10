@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ansible==2.2.0.0
 cffi==1.9.1
 colorama==0.3.7

@@ -1,4 +1,7 @@
-env
-*.idea
-__pycache__
+node_modules
 *.pyc
+__pycache__
+*.idea
+env
+bower_components/
+
