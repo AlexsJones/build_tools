@@ -3,7 +3,7 @@
 #     File Name           :     app.py
 #     Created By          :     jonesax
 #     Creation Date       :     [2017-01-12 11:49]
-#     Last Modified       :     [2017-01-12 14:33]
+#     Last Modified       :     [2017-02-10 13:57]
 #     Description         :
 ##########################################################################
 
@@ -138,7 +138,7 @@ def poll_homepage_updates():
     socketio.emit('homepage_room_updates',
          {'total_open': to, 'total_closed': tc, 'total_wip': tw}, room=default_room, namespace='/bindings')
 
-    threading.Timer(5, poll_homepage_updates).start()
+    threading.Timer(10, poll_homepage_updates).start()
 ################################################################################################
 if __name__ == "__main__":
 

@@ -1,14 +1,8 @@
 {% include 'partials/header.html' %}
 
 {% include 'partials/alerts.html' %}
-<style>
-    .container {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-}
-</style>
+<br/>
+<br/>
 <div id="merge_container" class="container" xmlns="http://www.w3.org/1999/html">
     <div id="calenders" style="margin-top:80px; display: flex; flex: 1">
         <!--<form id="date_input" action="/merge_requests" method="POST">-->
@@ -122,7 +116,7 @@
                         $('#merge_container').show();
                     });
                     socket.on('error', function(msg) {
-                        alert(msg);
+                       console.log(msg);
                     });
                     socket.on('page_status', function(msg) {
                         $("#psm").text(msg['page_status']);
