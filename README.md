@@ -1,4 +1,3 @@
-
 ```
 .______    __    __   __   __       _______
 |   _  \  |  |  |  | |  | |  |     |       \
@@ -18,7 +17,6 @@
 [![Build Status](https://travis-ci.org/AlexsJones/build_tools.svg?branch=master)](https://travis-ci.org/AlexsJones/build_tools)
 
 ##build tools
-===========
 
 Python based dynamic service loading build system
 
@@ -51,5 +49,3 @@ python ./build_tools.py [module_name] --help
 ###Requirements
 ```
 libffi 
-nmap
-```

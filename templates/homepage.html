@@ -1,0 +1,61 @@
+{% include 'partials/header.html' %}
+
+{% include 'partials/alerts.html' %}
+
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+ <style>
+    .container {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+</style>
+
+<div id="homepage_content" class="container" style="text-align:center;">
+
+    <div id="page-title" style="width: 50%; margin: 0 auto; margin-top: 80px">
+        <h2>Stats from T-14 days</h2>
+    </div>
+    <div id="open-requests-total" style="width:33%; float: left; margin-top: 30px">
+              <h2>Open Requests</h2>
+        <div id="open-value" style="width:50%; margin: 0 auto">
+            <h1 id="hor">{{ total_open }}</h1>
+        </div>
+    </div>
+    <div id="wip-requests-total" style="width:33%; float: right; margin-top: 30px">
+        <h2>WIP Requests</h2>
+        <div id="wip-value" style="width:50%; margin: 0 auto">
+            <h1 id="hwr">{{ total_wip }}</h1>
+        </div>
+    </div>
+    <div id="closed-requests-total" style="width:33%; margin: 0 auto; margin-top: 60px">
+            <h2>Closed Requests</h2>
+        <div id="closed-value" style="width:50%; margin: 0 auto">
+            <h1 id="hcr">{{ total_closed }}</h1>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function() {
+
+
+    namespace = '/bindings';
+
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
+            socket.on('homepage_room_updates', function(msg) {
+
+                $("#hor").text(msg['total_open']);
+                $("#hcr").text(msg['total_closed']);
+                $("#hwr").text(msg['total_wip']);
+
+            });
+
+
+});
+</script>
+{% include 'partials/footer.html' %}

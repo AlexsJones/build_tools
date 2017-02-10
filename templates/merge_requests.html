@@ -1,0 +1,211 @@
+{% include 'partials/header.html' %}
+
+{% include 'partials/alerts.html' %}
+<br/>
+<br/>
+<div id="merge_container" class="container" xmlns="http://www.w3.org/1999/html">
+    <div id="calenders" style="margin-top:80px; display: flex; flex: 1">
+        <!--<form id="date_input" action="/merge_requests" method="POST">-->
+        <div id="start-date-div" style="float: left">
+            <h3>Start Date</h3>
+            <input class="form-control" id="start-date" name="start-date" placeholder="DD/MM/YYY" type="text"/>
+        </div>
+        <div id="end-date-div" style="overflow: hidden; margin-left: 10px, margin-top: -100px">
+            <h3>End Date</h3>
+            <input class="form-control" id="end-date" name="end-date" placeholder="DD/MM/YYY" type="text"/>
+        </div>
+        <div id="filter_button" style="overflow: hidden; margin-left: 5px; margin-top: 60px">
+            <input type="button" value="Filter Requests">
+        </div>
+
+
+    </div>
+
+    <div class="page_status">
+        <p id="ps" class=error><strong></strong></p>
+    </div>
+
+    <div id="psm">{{ page_status }}</div>
+
+
+    <table id="stats" class="table" style="margin-top: 50px;">
+
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Open Requests</th>
+                <th>Closed Requests</th>
+                <th>WIP Requests</th>
+            </tr>
+        </thead>
+        <tbody id="table">
+
+        </tbody>
+
+    </table>
+
+    <div id="open-canvas-holder" style="width:33%; float: left">
+        <label id="ol" for="open-chart-area"></label>
+            <h3>Open Requests<br/></h3>
+        <canvas id="open-chart-area"/>
+    </div>
+
+    <div id="wip-canvas-holder" style="width:33%; float: right">
+        <label id="wl" for="wip-chart-area"/>
+            <h3>WIP Requests<br/></h3>
+        <canvas id="wip-chart-area"/>
+    </div>
+
+    <div id="closed-canvas-holder" style="width:33%; margin: 0 auto">
+        <label id ="cl" for="closed-chart-area"/>
+            <h3>Closed Requests<br/></h3>
+        <canvas id="closed-chart-area"/>
+    </div>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+
+
+                    $('#loading').hide();
+
+                    var start_date_input=$('input[name="start-date"]');
+                    var end_date_input=$('input[name="end-date"]');
+                    var container =$('.calenders').length>0 ? $('.calenders').parent() : "body";
+                    var options={
+                    format: 'dd/mm/yyyy',
+                    container: container,
+                    todayHighlight: true,
+                    autoclose: true,
+                    };
+                    start_date_input.datepicker(options);
+                    end_date_input.datepicker(options);
+
+                    namespace = '/bindings';
+                    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+                    var ctx = document.getElementById("open-chart-area").getContext("2d");
+                    var ctx1 = document.getElementById("closed-chart-area").getContext("2d");
+                    var ctx2 = document.getElementById("wip-chart-area").getContext("2d");
+
+                    var chart1 = null;
+                    var chart2 = null;
+                    var chart3 = null;
+
+
+                    $("#filter_button").click(function() {
+                        $('#loading').show();
+                        $('#merge_container').hide();
+
+                        var tb = document.getElementById('table');
+                        while(tb.rows.length > 0) {
+                        tb.deleteRow(0);
+                        }
+
+                        socket.emit('fetch_merge_request_updates', {
+                            start_date: $('#start-date').val(),
+                            end_date: $('#end-date').val()
+                        });
+                        document.getElementById("page_status").innerHTML = "";
+                    });
+
+
+
+                    socket.on('error_raised', function(msg) {
+                        $("#ps").text(msg['error']);
+                    });
+                    socket.on('kill_loading',function(msg) {
+                        $('#loading').hide();
+                        $('#merge_container').show();
+                    });
+                    socket.on('error', function(msg) {
+                       console.log(msg);
+                    });
+                    socket.on('page_status', function(msg) {
+                        $("#psm").text(msg['page_status']);
+                    });
+                    socket.on('table', function(msg) {
+
+                        $('#loading').hide();
+                        $('#merge_container').show();
+                                var bgcol = [];
+                                var bgcol1 = [];
+                                var bgcol2 = [];
+                                var user = [];
+                                var data = [];
+                                var data1 = [];
+                                var data2 = [];
+                                var parsed = JSON.parse(msg);
+                                for (var key in parsed) {
+                                    var username = parsed[key]['name'];
+                                    var open_requests = parsed[key]['open_requests'].length;
+                                    var closed_requests = parsed[key]['closed_requests'].length;
+                                    var wip_requests = parsed[key]['wip_requests'].length;
+                                    var table_row = "".concat("<tr><td>", username, "</td><td>", open_requests, "</td><td>", closed_requests, "</td><td>", wip_requests, "</td></tr>");
+                                    $("#stats").append(table_row);
+                                    //Generate charts
+                                    data.push(open_requests);
+                                    bgcol.push('#' + (Math.random() * 0xFFFFFF << 0).toString(16));
+                                    bgcol1.push('#' + (Math.random() * 0xFFFFFF << 0).toString(16));
+                                    bgcol2.push('#' + (Math.random() * 0xFFFFFF << 0).toString(16));
+                                    user.push(username);
+                                    data1.push(closed_requests);
+                                    data2.push(wip_requests);
+                                  };
+                                    var config = {
+                                        type: 'pie',
+                                        data: {
+                                            datasets: [{
+                                                data: data,
+                                                backgroundColor: bgcol,
+                                                label: 'Dataset 1'
+                                            }],
+                                            labels: user
+                                        },
+                                        options: {
+                                            responsive: true
+                                        }
+                                    };
+                                    var config1 = {
+                                        type: 'pie',
+                                        data: {
+                                            datasets: [{
+                                                data: data1,
+                                                backgroundColor: bgcol1,
+                                                label: 'Dataset 2'
+                                            }],
+                                            labels: user
+                                        },
+                                        options: {
+                                            responsive: true
+                                        }
+                                    };
+                                    var config2 = {
+                                        type: 'pie',
+                                        data: {
+                                            datasets: [{
+                                                data: data2,
+                                                backgroundColor: bgcol2,
+                                                label: 'Dataset 3'
+                                            }],
+                                            labels: user
+                                        },
+                                        options: {
+                                            responsive: true
+                                        }
+                                    };
+                                    if (chart1 != null) {
+                                        chart1.destroy();
+                                        ctx.clearRect(0, 0, ctx.width, ctx.height);
+                                    }
+                                    chart1  = new Chart(ctx, config);
+                                    if (chart2 != null) {
+                                        chart2.destroy();
+                                    }
+                                    chart2 = new Chart(ctx1, config1);
+                                    if (chart3 != null) {
+                                        chart3.destroy();
+                                    }
+                                    chart3 = new Chart(ctx2, config2);
+                                    })
+                                });
+    </script>
+</div>
+{% include 'partials/footer.html' %}

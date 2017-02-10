@@ -1,5 +1,9 @@
 language: python
 python:
   - "3.5"
+<<<<<<< HEAD
 before_script: sudo apt-get install nmap && sudo apt-get install libffi-dev
 script: pip install -r requirements.txt && python ./build_tools.py --help
+=======
+script: pip install -r requirements.txt 
+>>>>>>> 9746f2fdb2f620476eb0fd7cb68ad2b44cfa6eaf
