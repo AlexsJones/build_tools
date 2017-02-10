@@ -16,8 +16,8 @@ import jsonpickle
 from src.temporary_storage_object import TemporaryStorageObject
 from flask import Flask, render_template, request, session
 from flask_socketio import SocketIO, emit, join_room, close_room, leave_room, rooms
-import build_tools.utils.rate_limit
 from build_tools.services.gitlab_service import gitlab_service
+
 # Configuration #################################################################################
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, static_folder='bower_components', template_folder=tmpl_dir)
