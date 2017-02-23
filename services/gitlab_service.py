@@ -19,6 +19,46 @@ def parse_datetime(d):
     return dt
 
 
+class UserInfo:
+            def __init__(self, name):
+                self.name = name
+                self.merges = []
+                self.closed_requests = []
+                self.open_requests = []
+                self.wip_requests = []
+
+            def filter_merge_list(self, merge_list, s, e):
+                result = []
+                for m in merge_list:
+                    datetime_object = parse_datetime(m.get('created_at', None))
+                    if datetime_object < s:
+                        continue
+                    if datetime_object > e:
+                        continue
+                    result.append(m)
+
+                return result
+
+            def sort_merge(self, merge,stime,etime):
+
+                datetime_object = parse_datetime(merge.get('created_at', None))
+                if datetime_object < stime:
+                    return
+                if datetime_object > etime:
+                    return
+                if merge.get("title",None) is None:
+                    return
+
+                if "WIP" in merge.get("title", None):
+                    if merge.get('state', None) == 'opened':
+                        self.wip_requests.append(merge)
+
+                if merge.get('state', None) == 'opened':
+                    self.open_requests.append(merge)
+
+                if merge.get('state', None) == 'closed':
+                    self.closed_requests.append(merge)
+
 class gitlab_service():
     def additional_options(self, parser):
         parser.add_argument("--command",
@@ -81,46 +121,6 @@ class gitlab_service():
                 print("Requires gitlab project e.g. myname/project")
                 exit(0)
 
-            class UserInfo:
-                def __init__(self, name):
-                    self.name = name
-                    self.merges = []
-                    self.closed_requests = []
-                    self.open_requests = []
-                    self.wip_requests = []
-
-
-                def filter_merge_list(self, merge_list, s, e):
-                    result = []
-                    for m in merge_list:
-                        datetime_object = parse_datetime(m.get('created_at', None))
-                        if datetime_object < s:
-                            continue
-                        if datetime_object > e:
-                            continue
-                        result.append(m)
-
-                    return result
-
-                def sort_merge(self, merge):
-
-                    datetime_object = parse_datetime(merge.get('created_at', None))
-                    if datetime_object < stime:
-                        return
-                    if datetime_object > etime:
-                        return
-                    if merge.get("title",None) is None:
-                        return
-
-                    if "WIP" in merge.get("title", None):
-                        if merge.get('state', None) == 'opened':
-                            self.wip_requests.append(merge)
-
-                    if merge.get('state', None) == 'opened':
-                        self.open_requests.append(merge)
-
-                    if merge.get('state', None) == 'closed':
-                        self.closed_requests.append(merge)
 
             user_info = dict()
 
@@ -144,13 +144,13 @@ class gitlab_service():
                     if "Anonymous" not in user_info:
                         user_info["Anonymous"] = UserInfo(
                             "Anonymous")
-                    user_info["Anonymous"].sort_merge(merge)
+                    user_info["Anonymous"].sort_merge(merge,stime,etime)
                 else:
                     if merge.get("author", None).get("name", None) not in user_info:
                         user_info[merge.get("author", None).get("name", None)] = UserInfo(
                          merge.get("author", None).get("name", None))
 
-                    user_info[merge.get("author", None).get("name", None)].sort_merge(merge)
+                    user_info[merge.get("author", None).get("name", None)].sort_merge(merge,stime,etime)
 
             self.walk_merge_request(options.gitlab_max_size, options.gitlab_token, options.gitlab_server,
                                     comparison_operator)
