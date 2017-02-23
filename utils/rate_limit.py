@@ -1,5 +1,6 @@
 import time
 
+
 def RateLimited(maxPerSecond):
     minInterval = 1.0 / float(maxPerSecond)
     def decorate(func):

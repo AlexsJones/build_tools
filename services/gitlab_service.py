@@ -18,6 +18,7 @@ def parse_datetime(d):
     dt = datetime.strptime(f, "%d/%m/%y")
     return dt
 
+
 class gitlab_service():
     def additional_options(self, parser):
         parser.add_argument("--command",
@@ -88,6 +89,19 @@ class gitlab_service():
                     self.open_requests = []
                     self.wip_requests = []
 
+
+                def filter_merge_list(self, merge_list, s, e):
+                    result = []
+                    for m in merge_list:
+                        datetime_object = parse_datetime(m.get('created_at', None))
+                        if datetime_object < s:
+                            continue
+                        if datetime_object > e:
+                            continue
+                        result.append(m)
+
+                    return result
+
                 def sort_merge(self, merge):
 
                     datetime_object = parse_datetime(merge.get('created_at', None))
@@ -95,8 +109,12 @@ class gitlab_service():
                         return
                     if datetime_object > etime:
                         return
-                    if "WIP" in merge.get("title", None) and merge.get('state', None) == 'opened':
-                        self.wip_requests.append(merge)
+                    if merge.get("title",None) is None:
+                        return
+
+                    if "WIP" in merge.get("title", None):
+                        if merge.get('state', None) == 'opened':
+                            self.wip_requests.append(merge)
 
                     if merge.get('state', None) == 'opened':
                         self.open_requests.append(merge)
@@ -122,11 +140,17 @@ class gitlab_service():
                     print("Ignoring merge too young!")
                     return
 
-                if merge.get("author", None).get("name", None) not in user_info:
-                    user_info[merge.get("author", None).get("name", None)] = UserInfo(
-                        merge.get("author", None).get("name", None))
+                if "author" not in merge:
+                    if "Anonymous" not in user_info:
+                        user_info["Anonymous"] = UserInfo(
+                            "Anonymous")
+                    user_info["Anonymous"].sort_merge(merge)
+                else:
+                    if merge.get("author", None).get("name", None) not in user_info:
+                        user_info[merge.get("author", None).get("name", None)] = UserInfo(
+                         merge.get("author", None).get("name", None))
 
-                user_info[merge.get("author", None).get("name", None)].sort_merge(merge)
+                    user_info[merge.get("author", None).get("name", None)].sort_merge(merge)
 
             self.walk_merge_request(options.gitlab_max_size, options.gitlab_token, options.gitlab_server,
                                     comparison_operator)
