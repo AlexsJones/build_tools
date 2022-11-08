@@ -2,7 +2,7 @@ ansible==2.9.27.0
 cffi==1.9.1
 colorama==0.3.7
 configobj==5.0.6
-cryptography==1.7.1
+cryptography==3.2
 enum34==1.1.6
 idna==2.1
 ipaddress==1.0.17
@@ -18,6 +18,6 @@ python-gitlab==0.17
 python-nmap==0.6.1
 pytz==2016.10
 PyYAML==4.2b1
-requests==2.12.4
+requests==2.20
 six==1.10.0
 termcolor==1.1.0
